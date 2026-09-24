@@ -1,76 +1,50 @@
-# Nuxt Minimal Starter
+# ChampaShop
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Boutique fictive construite avec Nuxt 4, Pinia et Vitest.
 
-## Setup
+Site déployé : _à compléter (URL Vercel/Netlify branchée sur `main`)_
 
-Make sure to install dependencies:
+## Démarrage
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
+## Tests
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npm test
 ```
 
-Locally preview production build:
+## Scripts disponibles
 
-```bash
-# npm
-npm run preview
+| Script | Rôle |
+| --- | --- |
+| `npm run dev` | Serveur de développement |
+| `npm run build` | Build de production |
+| `npm run preview` | Prévisualisation du build |
+| `npm run lint` | ESLint (`@nuxt/eslint`) |
+| `npm run typecheck` | Vérification des types (`nuxt typecheck`) |
+| `npm test` | Tests Vitest |
+| `npm run test:coverage` | Tests avec couverture (`@vitest/coverage-v8`) |
 
-# pnpm
-pnpm preview
+## Conventions Git
 
-# yarn
-yarn preview
+- Branches protégées : `main` (production) et `develop` (intégration). Pas de push direct ni de force-push.
+- Une branche par fonctionnalité depuis `develop` : `feature/<nom>`, `fix/<nom>`, `chore/<nom>`.
+- Commits au format Conventional Commits (`feat:`, `fix:`, `test:`, `chore:`, `docs:`).
+- Toute modification passe par une Pull Request (template fourni) : 1 approbation minimum et CI verte
+  (install, lint, typecheck, test, build) avant merge.
+- Labels : `feature`, `bug`, `bug-prod`, `a11y`, `test`. Milestone : « Semaine 1 ».
 
-# bun
-bun run preview
-```
+## Répartition des rôles
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-# wr505-Nuxt
+| Membre | Rôle |
+| --- | --- |
+| Maxime | Catalogue produits (F1) et moteur de promotions (F4) |
+| Yoan | Setup projet, CI/CD, outillage, missions de la semaine |
+
+## Usage de l’IA
+
+Chaque membre documente son usage dans `docs/ai-usage/<prenom>.md`.
