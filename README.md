@@ -13,45 +13,36 @@ npm run dev
 
 ## Catalogue /produits
 
-La page catalogue est disponible sur `/produits` et exploite les query params pour représenter l’état complet de la vue :
+La page catalogue (`/produits`) affiche 12 produits par page avec image, titre, prix, note et badge de remise (`discountPercentage`). Elle propose recherche plein texte, filtre par catégorie, filtre de prix, tri par titre, prix ou note, et gère les états de chargement (squelettes), d’absence de résultat et d’erreur réseau (bouton « Réessayer »).
 
-- `page`
-- `q` (recherche)
-- `category`
-- `sortBy`
-- `order`
-- `minPrice`
-- `maxPrice`
+### L’URL est la source de vérité
 
-Le rechargement de page, le retour arrière et les liens partagés reproduisent exactement l’état affiché.
+Tout l’état de la vue est dans les query params : `page`, `q`, `category`, `sortBy`, `order`, `minPrice`, `maxPrice`. Seules les valeurs différentes des valeurs par défaut sont écrites (`/produits` = page 1, tri titre A → Z).
+
+- Rechargement, bouton retour et lien partagé reproduisent la même vue, rendue côté serveur (SSR).
+- Les valeurs invalides (`page=abc`, `sortBy=foo`, prix négatif, min supérieur à max) retombent sur des valeurs sûres au lieu de casser la page.
+- Une page hors bornes (`?page=999`) est ramenée à la dernière page valide.
+- Chaque changement de filtre ajoute une entrée d’historique (bouton retour) et remet la page à 1 ; la frappe dans la recherche remplace l’entrée courante.
+
+### Recherche : debounce et réponses obsolètes
+
+- Le champ de recherche n’écrit dans l’URL qu’après 300 ms sans frappe (`useDebouncedSync`).
+- Le chargement dépend de `q` uniquement (clé de `useAsyncData`). Quand `q` change, Nuxt annule la requête en cours (`signal`) : une réponse ancienne ne peut jamais écraser une réponse plus récente.
 
 ## Stratégie pour le filtrage prix min/max
 
-DummyJSON ne propose pas de filtre `minPrice` / `maxPrice` côté API. Pour rester compatible avec les exigences de recherche, de pagination et de SSR, la solution retenue est la suivante :
+DummyJSON ne propose pas de filtre `minPrice` / `maxPrice`, ni de tri combiné à une recherche paginée sur tous les critères. La stratégie retenue est de **charger le catalogue une seule fois puis de filtrer, trier et paginer côté client** :
 
-1. On effectue un appel unique à l’API avec `limit=0`, en combinant uniquement les paramètres
-   qu’elle sait traiter (recherche plein texte `q`). DummyJSON renvoie alors l’intégralité du
-   catalogue (194 produits) plutôt qu’une page tronquée.
-2. On applique le filtre catégorie, le filtre prix min/max et le tri (`sortBy`/`order`) côté
-   client, sur ce jeu de données complet.
-3. On découpe ensuite la liste filtrée/triée en pages de 12 produits, toujours côté client.
+1. Un appel unique `GET /products?limit=0&select=…` (ou `/products/search?q=…` avec la même forme) renvoie tout le catalogue correspondant à la recherche.
+2. Le filtre catégorie, le filtre de prix, le tri et la découpe en pages de 12 sont des fonctions pures (`utils/catalog.ts`) appliquées sur ce jeu de données.
 
 ### Justification
 
-- Les filtres prix ne sont pas exposés par DummyJSON : il n’y a pas d’alternative côté API.
-- Récupérer le catalogue complet en un seul appel (`limit=0`) évite de multiplier les
-  requêtes réseau à chaque changement de prix, de tri ou de page — un seul aller-retour par
-  recherche/catégorie suffit.
-- Filtrer sur un sous-ensemble arbitraire (ex. les 100 premiers produits) aurait faussé les
-  résultats : certains produits auraient été invisibles quel que soit le filtre appliqué.
-  Travailler sur le catalogue complet garantit des résultats et un nombre de pages corrects.
-- Le volume reste modeste (194 produits, quelques dizaines de Ko de JSON), donc le coût
-  mémoire/CPU du filtrage client est négligeable et n’impacte pas le rendu SSR ni la
-  correspondance avec l’URL.
-- La requête est ré-exécutée uniquement quand `q` ou `category` change (clé `useAsyncData`
-  dédiée) ; Nuxt annule automatiquement une requête devenue obsolète (`dedupe: 'cancel'`),
-  ce qui garantit qu’une réponse ancienne n’écrase jamais une réponse plus récente en cas de
-  frappe rapide dans le champ de recherche.
+- **Appels** : un seul appel par recherche. Changer de catégorie, de prix, de tri ou de page n’appelle plus l’API. Seul un changement de `q` relance une requête.
+- **Performance** : le paramètre `select` limite la réponse aux 7 champs affichés dans la liste (id, titre, prix, note, remise, catégorie, miniature). Pour les 194 produits, la réponse passe d’environ 306 Ko à 43 Ko. Filtrer 194 éléments côté client est négligeable.
+- **Pagination** : elle est calculée après filtre et tri, sur le catalogue complet. Le nombre de résultats et de pages est donc toujours exact ; paginer côté API (`limit`/`skip`) puis filtrer le prix côté client aurait masqué des produits et faussé le nombre de pages.
+- **SSR** : la requête est faite côté serveur ; la page arrive rendue, avec la bonne pagination pour l’URL demandée.
+- **Limite connue** : si le catalogue atteignait plusieurs milliers de produits, il faudrait un endpoint côté serveur (BFF) qui filtre et pagine. Ce n’est pas nécessaire pour 194 produits.
 
 ## Moteur de promotions
 
