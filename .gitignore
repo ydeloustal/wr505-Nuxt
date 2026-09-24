@@ -25,6 +25,10 @@ logs
 
 # Local Claude Code config
 .claude
+CLAUDE.md
 
-# Test coverage reports
+# Coverage
 coverage
+
+# Vitest
+.vitest

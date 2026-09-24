@@ -72,12 +72,12 @@ const addToCart = () => {
     <section v-if="pending" class="state">Chargement du produit...</section>
     <section v-else-if="error || !product" class="state">
       <p>Impossible de charger ce produit.</p>
-      <button type="button" @click="refresh">Réessayer</button>
+      <button type="button" @click="() => refresh()">Réessayer</button>
     </section>
 
     <article v-else class="product-detail">
       <div class="gallery">
-        <img :src="product.thumbnail || product.images?.[0] || 'https://placehold.co/800x800/eee/999?text=Produit'" :alt="product.title" />
+        <img :src="product.thumbnail || product.images?.[0] || 'https://placehold.co/800x800/eee/999?text=Produit'" :alt="product.title" >
       </div>
 
       <div class="content">
@@ -104,7 +104,7 @@ const addToCart = () => {
         <div class="cart-actions">
           <label class="qty-field">
             <span>Quantité</span>
-            <input v-model.number="quantity" type="number" min="1" step="1" />
+            <input v-model.number="quantity" type="number" min="1" step="1" >
           </label>
           <button type="button" class="add-button" :class="{ added: justAdded }" @click="addToCart">
             {{ justAdded ? 'Ajouté au panier ✓' : 'Ajouter au panier' }}
