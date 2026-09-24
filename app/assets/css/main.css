@@ -1,0 +1,49 @@
+:root {
+  --color-bg: #f6f5f2;
+  --color-surface: #ffffff;
+  --color-border: #e7e5e0;
+  --color-text: #14141a;
+  --color-muted: #6b6b76;
+  --color-brand: #7c3aed;
+  --color-brand-dark: #5b21b6;
+  --color-accent: #f97316;
+  --color-danger: #dc2626;
+  --color-success: #16a34a;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 2px 8px rgba(20, 20, 26, 0.06);
+  --shadow-md: 0 12px 32px rgba(20, 20, 26, 0.08);
+  --shadow-lg: 0 24px 60px rgba(20, 20, 26, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell main {
+  flex: 1;
+}
