@@ -25,3 +25,6 @@ logs
 
 # Local Claude Code config
 .claude
+
+# Test coverage reports
+coverage

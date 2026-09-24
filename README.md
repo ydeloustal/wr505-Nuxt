@@ -53,12 +53,12 @@ DummyJSON ne propose pas de filtre `minPrice` / `maxPrice` côté API. Pour rest
 
 ## Moteur de promotions
 
-Le fichier `utils/promotions.ts` expose une fonction pure `computeCart(...)` sans dépendance Vue ou Pinia. Tous les montants sont manipulés en centimes, et les règles de remise sont calculées localement.
+Le fichier `utils/promotions.ts` expose une fonction pure `computeCart(...)` sans dépendance Vue ou Pinia. Tous les montants sont manipulés en centimes, et les règles de remise sont calculées localement, dans cet ordre :
 
-Les codes pris en charge sont :
-
-- `BEAUTY_3` : remise de 30 % sur le sous-total des produits de catégorie `beauty` si au moins 3 articles sont présents.
-- `TROYES10` : remise de 10 % si le montant total du panier dépasse 45,00 €.
+1. **Remise beauté automatique** : dès que le panier contient au moins 3 articles cumulés de catégorie `beauty`, chaque ligne beauty est remisée de 10 %, arrondie au centime ligne par ligne (arrondi commercial, demi vers le haut). Cette remise ne dépend d’aucun code promo.
+2. **Code `TROYES10`** : remise fixe de 10,00 € si le sous-total après remise beauté dépasse strictement 50,00 €. Le code est insensible à la casse et aux espaces (`" TrOyEs10 "` fonctionne). S’il est refusé (sous-total insuffisant ou code inconnu), `messages` explique pourquoi.
+3. **Plafond de 25 %** : le total des remises ne peut jamais dépasser 25 % du sous-total brut (arrondi au centime). En cas de dépassement, c’est le code promo qui est réduit en conséquence, jamais la remise beauté ; un message informe de la réduction.
+4. **Livraison** : 4,90 €, offerte si le montant après remises atteint 80,00 €, sauf si le panier contient un produit de catégorie `furniture` (livraison alors toujours facturée).
 
 La logique est volontairement front-only car DummyJSON ne prend pas en charge les promotions côté API.
 
@@ -72,6 +72,18 @@ et affichage du résumé (sous-total, remises, livraison, total, messages d’er
 ```bash
 npm test
 ```
+
+`tests/unit/promotions.spec.ts` couvre les 4 règles de `computeCart` (remise beauté, code
+TROYES10, plafond à 25 %, livraison) ainsi que des cas limites (panier vide, quantités à 0,
+code promo invalide ou composé uniquement d’espaces). La couverture est vérifiée avec :
+
+```bash
+npm run test:coverage
+```
+
+Un seuil de 90 % (lignes et branches) est imposé dans `vitest.config.ts` sur `utils/promotions.ts` :
+la commande échoue si la couverture passe en dessous, ce qui permet à la CI de bloquer une
+régression de tests sur le moteur de promotions.
 
 ## Scripts disponibles
 
