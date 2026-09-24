@@ -3,6 +3,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   typescript: { strict: true, typeCheck: true },
   modules: ['@pinia/nuxt', '@nuxt/eslint'],
+  runtimeConfig: {
+    public: {
+      apiBase: 'https://dummyjson.com',
+    },
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {
