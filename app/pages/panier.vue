@@ -37,7 +37,7 @@ watch(
     <section v-else class="cart-layout">
       <ul class="cart-lines">
         <li v-for="item in cart.items" :key="item.productId" class="cart-line">
-          <img :src="item.thumbnail || 'https://placehold.co/160x160/eee/999?text=Produit'" :alt="item.title" />
+          <img :src="item.thumbnail || 'https://placehold.co/160x160/eee/999?text=Produit'" :alt="item.title" >
 
           <div class="line-info">
             <p class="line-category">{{ item.category }}</p>
@@ -53,10 +53,10 @@ watch(
                 step="1"
                 :value="item.quantity"
                 @change="cart.setQuantity(item.productId, Number(($event.target as HTMLInputElement).value))"
-              />
+              >
             </label>
             <p class="line-total">{{ formatCurrency(item.unitPriceCents * item.quantity) }}</p>
-            <button type="button" class="remove-button" @click="cart.removeItem(item.productId)" aria-label="Retirer l'article">✕</button>
+            <button type="button" class="remove-button" aria-label="Retirer l'article" @click="cart.removeItem(item.productId)">✕</button>
           </div>
         </li>
       </ul>
@@ -67,7 +67,7 @@ watch(
         <label class="promo-field">
           <span>Code promo</span>
           <div class="promo-input">
-            <input v-model="promoInput" type="text" placeholder="BEAUTY_3, TROYES10..." @keyup.enter="applyPromo" />
+            <input v-model="promoInput" type="text" placeholder="BEAUTY_3, TROYES10..." @keyup.enter="applyPromo" >
             <button type="button" @click="applyPromo">Appliquer</button>
           </div>
         </label>

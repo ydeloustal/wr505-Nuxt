@@ -229,7 +229,7 @@ const paginationItems = computed(() => {
   }
 
   let start = Math.max(1, current - 1)
-  let end = Math.min(total, start + 2)
+  const end = Math.min(total, start + 2)
 
   if (end - start < 2) {
     start = Math.max(1, end - 2)
@@ -390,7 +390,7 @@ const addToCart = (product: Product) => {
             <circle cx="11" cy="11" r="7" />
             <path d="m21 21-4.35-4.35" />
           </svg>
-          <input v-model="searchInput" type="search" placeholder="Rechercher un produit..." aria-label="Rechercher un produit" />
+          <input v-model="searchInput" type="search" placeholder="Rechercher un produit..." aria-label="Rechercher un produit" >
         </div>
 
         <details class="filter-section" open>
@@ -430,13 +430,13 @@ const addToCart = (product: Product) => {
           <div class="price-slider">
             <div class="track" />
             <div class="track-fill" :style="sliderFillStyle" />
-            <input type="range" min="0" :max="priceCeiling" step="1" :value="sliderMin" aria-label="Prix minimum" @input="onSliderInput('min', $event)" @change="commitPrice" />
-            <input type="range" min="0" :max="priceCeiling" step="1" :value="sliderMax" aria-label="Prix maximum" @input="onSliderInput('max', $event)" @change="commitPrice" />
+            <input type="range" min="0" :max="priceCeiling" step="1" :value="sliderMin" aria-label="Prix minimum" @input="onSliderInput('min', $event)" @change="commitPrice" >
+            <input type="range" min="0" :max="priceCeiling" step="1" :value="sliderMax" aria-label="Prix maximum" @input="onSliderInput('max', $event)" @change="commitPrice" >
           </div>
           <div class="price-fields">
-            <input v-model.number="minPriceInput" type="number" min="0" step="1" placeholder="0" aria-label="Prix minimum (€)" @change="commitPrice" />
+            <input v-model.number="minPriceInput" type="number" min="0" step="1" placeholder="0" aria-label="Prix minimum (€)" @change="commitPrice" >
             <span aria-hidden="true">–</span>
-            <input v-model.number="maxPriceInput" type="number" min="0" step="1" :placeholder="String(priceCeiling)" aria-label="Prix maximum (€)" @change="commitPrice" />
+            <input v-model.number="maxPriceInput" type="number" min="0" step="1" :placeholder="String(priceCeiling)" aria-label="Prix maximum (€)" @change="commitPrice" >
           </div>
         </details>
 
@@ -472,7 +472,7 @@ const addToCart = (product: Product) => {
           <p class="eyebrow">ChampaShop</p>
           <h1>Catalogue produits</h1>
         </div>
-        <p class="result-count" v-if="!pending && !error">{{ filteredProducts.length }} produit(s) trouvé(s)</p>
+        <p v-if="!pending && !error" class="result-count">{{ filteredProducts.length }} produit(s) trouvé(s)</p>
       </header>
 
       <div class="mobile-toolbar">
@@ -520,7 +520,7 @@ const addToCart = (product: Product) => {
           <article v-for="product in currentPageItems" :key="product.id" class="product-card">
             <NuxtLink :to="{ name: 'produits-id', params: { id: product.id } }" class="product-link">
               <div class="product-image-wrap">
-                <img :src="product.thumbnail || product.images?.[0] || 'https://placehold.co/600x600/eee/999?text=Produit'" :alt="product.title" loading="lazy" />
+                <img :src="product.thumbnail || product.images?.[0] || 'https://placehold.co/600x600/eee/999?text=Produit'" :alt="product.title" loading="lazy" >
                 <span v-if="product.discountPercentage > 0" class="discount-badge">−{{ Math.round(product.discountPercentage) }}%</span>
               </div>
 
@@ -551,7 +551,7 @@ const addToCart = (product: Product) => {
           <p class="page-summary">Produits {{ pageRange.start }}–{{ pageRange.end }} sur {{ filteredProducts.length }}</p>
 
           <div v-if="totalPages > 1" class="page-buttons">
-            <button type="button" class="nav-arrow" :disabled="safePage <= 1" @click="goToPage(safePage - 1)" aria-label="Page précédente">‹</button>
+            <button type="button" class="nav-arrow" :disabled="safePage <= 1" aria-label="Page précédente" @click="goToPage(safePage - 1)">‹</button>
 
             <button
               v-for="page in paginationItems"
@@ -566,11 +566,11 @@ const addToCart = (product: Product) => {
 
             <label class="page-jump">
               <span>Page</span>
-              <input :value="pageInput" type="number" min="1" :max="totalPages" aria-label="Aller à la page" @change="goToPage(Number(($event.target as HTMLInputElement).value))" />
+              <input :value="pageInput" type="number" min="1" :max="totalPages" aria-label="Aller à la page" @change="goToPage(Number(($event.target as HTMLInputElement).value))" >
               <span>/ {{ totalPages }}</span>
             </label>
 
-            <button type="button" class="nav-arrow" :disabled="safePage >= totalPages" @click="goToPage(safePage + 1)" aria-label="Page suivante">›</button>
+            <button type="button" class="nav-arrow" :disabled="safePage >= totalPages" aria-label="Page suivante" @click="goToPage(safePage + 1)">›</button>
           </div>
         </nav>
       </section>
