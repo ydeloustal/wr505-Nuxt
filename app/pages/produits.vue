@@ -107,20 +107,16 @@ const categoryOptions = computed(() => {
   })
 })
 
+type SortKey = 'title' | 'price' | 'rating'
+const sortKeys: SortKey[] = ['title', 'price', 'rating']
+
 const sortProducts = (items: Product[]) => {
   const sorted = [...items]
   const { sortBy, order } = currentFilters.value
 
   sorted.sort((a, b) => {
-    const left = (a as Record<string, string | number>)[sortBy] ?? 0
-    const right = (b as Record<string, string | number>)[sortBy] ?? 0
-
-    if (typeof left === 'string' && typeof right === 'string') {
-      const comparison = left.localeCompare(right)
-      return order === 'desc' ? -comparison : comparison
-    }
-
-    const comparison = Number(left) - Number(right)
+    const key = sortKeys.includes(sortBy as SortKey) ? (sortBy as SortKey) : 'title'
+    const comparison = key === 'title' ? a.title.localeCompare(b.title) : a[key] - b[key]
     return order === 'desc' ? -comparison : comparison
   })
 

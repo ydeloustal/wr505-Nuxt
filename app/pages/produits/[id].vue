@@ -72,7 +72,7 @@ const addToCart = () => {
     <section v-if="pending" class="state">Chargement du produit...</section>
     <section v-else-if="error || !product" class="state">
       <p>Impossible de charger ce produit.</p>
-      <button type="button" @click="refresh">Réessayer</button>
+      <button type="button" @click="() => refresh()">Réessayer</button>
     </section>
 
     <article v-else class="product-detail">
