@@ -32,7 +32,7 @@ export interface Product {
 /** Champs nécessaires à la liste du catalogue : évite de charger les avis, images, etc. */
 export type ProductSummary = Pick<
   Product,
-  'id' | 'title' | 'price' | 'rating' | 'discountPercentage' | 'category' | 'thumbnail'
+  'id' | 'title' | 'price' | 'rating' | 'discountPercentage' | 'category' | 'thumbnail' | 'stock'
 >
 
 export interface ProductsResponse<T = Product> {

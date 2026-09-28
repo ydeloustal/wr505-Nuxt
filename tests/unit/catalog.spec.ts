@@ -19,6 +19,7 @@ const makeProduct = (overrides: Partial<ProductSummary> & { id: number }): Produ
   discountPercentage: 0,
   category: 'beauty',
   thumbnail: '',
+  stock: 10,
   ...overrides,
 })
 
