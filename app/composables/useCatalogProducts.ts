@@ -1,6 +1,6 @@
 import type { Category, ProductsResponse, ProductSummary } from '~~/types/dummyjson'
 
-const SUMMARY_FIELDS = 'id,title,price,rating,discountPercentage,category,thumbnail'
+const SUMMARY_FIELDS = 'id,title,price,rating,discountPercentage,category,thumbnail,stock'
 
 /**
  * Charge le catalogue complet correspondant à la recherche, en un seul appel.

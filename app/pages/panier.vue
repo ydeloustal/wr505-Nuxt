@@ -29,6 +29,8 @@ watch(
       <NuxtLink to="/produits" class="continue-link">← Continuer mes achats</NuxtLink>
     </header>
 
+    <p v-if="cart.stockMessage" class="stock-message" role="alert">{{ cart.stockMessage }}</p>
+
     <section v-if="cart.items.length === 0" class="empty-state">
       <p>Votre panier est vide.</p>
       <NuxtLink to="/produits" class="browse-link">Découvrir le catalogue</NuxtLink>
@@ -50,6 +52,7 @@ watch(
               <input
                 type="number"
                 min="1"
+                :max="item.stock"
                 step="1"
                 :value="item.quantity"
                 @change="cart.setQuantity(item.productId, Number(($event.target as HTMLInputElement).value))"
@@ -114,6 +117,16 @@ watch(
   align-items: end;
   gap: 1rem;
   margin-bottom: 2rem;
+}
+
+.stock-message {
+  margin: -0.75rem 0 1.5rem;
+  padding: 0.75rem 0.9rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  color: var(--color-danger);
+  font-size: 0.85rem;
 }
 
 .eyebrow {

@@ -68,6 +68,7 @@ const addToCart = () => {
       thumbnail: product.value.thumbnail,
       category: product.value.category,
       price: product.value.price,
+      stock: product.value.stock,
     },
     clampedQuantity.value,
   )
@@ -141,6 +142,8 @@ const addToCart = () => {
             {{ outOfStock ? 'Rupture de stock' : justAdded ? 'Ajouté au panier ✓' : 'Ajouter au panier' }}
           </button>
         </div>
+
+        <p v-if="cart.stockMessage" class="stock-message" role="alert">{{ cart.stockMessage }}</p>
       </div>
     </article>
   </main>
@@ -365,6 +368,16 @@ h1 {
   padding: 0.75rem 1rem;
   font: inherit;
   cursor: pointer;
+}
+
+.stock-message {
+  margin: 0.85rem 0 0;
+  padding: 0.6rem 0.85rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  color: var(--color-danger);
+  font-size: 0.85rem;
 }
 
 @media (max-width: 760px) {
