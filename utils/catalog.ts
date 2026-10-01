@@ -148,9 +148,11 @@ export const countByCategory = (products: ProductSummary[]): Record<string, numb
     return counts
   }, {})
 
-/** Borne haute du curseur de prix : le prix maximum du catalogue arrondi à l'entier supérieur. */
-export const getPriceCeiling = (products: ProductSummary[], fallback = 1000): number =>
-  products.length ? Math.ceil(Math.max(...products.map(product => product.price))) : fallback
+// Borne haute fixe du filtre de prix. Le curseur et le champ affichent « 3000+ » : atteindre
+// cette borne retire le plafond (voir `commitPrice` dans Filters.vue), donc elle inclut aussi les
+// produits au-delà de 3000 € au lieu de les exclure comme le ferait un maximum dynamique basé sur
+// le catalogue courant (qui varie avec la recherche et masquerait ce filtre à chaque rechargement).
+export const PRICE_CEILING = 3000
 
 /** Fenêtre de numéros de page centrée sur la page courante. */
 export const getPageWindow = (page: number, totalPages: number, size = 3): number[] => {

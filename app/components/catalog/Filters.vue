@@ -148,10 +148,14 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
             <input type="range" min="0" :max="priceCeiling" step="1" :value="sliderMin" aria-label="Prix minimum" @input="onSliderInput('min', $event)" @change="commitPrice">
             <input type="range" min="0" :max="priceCeiling" step="1" :value="sliderMax" aria-label="Prix maximum" @input="onSliderInput('max', $event)" @change="commitPrice">
           </div>
+          <div class="price-range-labels" aria-hidden="true">
+            <span>0 €</span>
+            <span>{{ priceCeiling }}+ €</span>
+          </div>
           <div class="price-fields">
-            <input v-model.number="minPriceInput" type="number" min="0" step="1" placeholder="0" aria-label="Prix minimum (€)" @change="commitPrice">
+            <input v-model.number="minPriceInput" type="number" min="0" :max="priceCeiling" step="1" placeholder="0" aria-label="Prix minimum (€)" @change="commitPrice">
             <span aria-hidden="true">–</span>
-            <input v-model.number="maxPriceInput" type="number" min="0" step="1" :placeholder="String(priceCeiling)" aria-label="Prix maximum (€)" @change="commitPrice">
+            <input v-model.number="maxPriceInput" type="number" min="0" :max="priceCeiling" step="1" :placeholder="`${priceCeiling}+`" aria-label="Prix maximum (€)" @change="commitPrice">
           </div>
         </details>
 
@@ -361,6 +365,14 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
 .price-slider input[type='range']:focus-visible::-webkit-slider-thumb {
   box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.25);
+}
+
+.price-range-labels {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-muted);
 }
 
 .price-fields {

@@ -43,6 +43,7 @@ DummyJSON ne propose pas de filtre `minPrice` / `maxPrice`, ni de tri combiné �
 - **Pagination** : elle est calculée après filtre et tri, sur le catalogue complet. Le nombre de résultats et de pages est donc toujours exact ; paginer côté API (`limit`/`skip`) puis filtrer le prix côté client aurait masqué des produits et faussé le nombre de pages.
 - **SSR** : la requête est faite côté serveur ; la page arrive rendue, avec la bonne pagination pour l’URL demandée.
 - **Limite connue** : si le catalogue atteignait plusieurs milliers de produits, il faudrait un endpoint côté serveur (BFF) qui filtre et pagine. Ce n’est pas nécessaire pour 194 produits.
+- **Borne du curseur de prix** : fixe, `0 – 3000+` (`PRICE_CEILING` dans `utils/catalog.ts`), plutôt que calculée depuis le prix maximum du catalogue courant. Une borne dynamique change selon la recherche ou la catégorie active et déplacerait le curseur sous les pieds de l'utilisateur ; `3000+` reste lisible (prix DummyJSON observés jusqu'à ~2000 €) et couvre toute valeur au-delà sans exclure de produit quand le curseur est au maximum.
 
 ## Moteur de promotions
 
