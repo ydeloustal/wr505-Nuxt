@@ -60,6 +60,20 @@ Le store Pinia (`stores/cart.ts`) convertit ses lignes de panier en `CartLine[]`
 ajout depuis le catalogue ou la fiche produit, modification des quantités, saisie d’un code promo
 et affichage du résumé (sous-total, remises, livraison, total, messages d’erreur).
 
+### Panier rattaché au compte
+
+Le cookie `cart` ne contient plus un seul panier mais deux compartiments : `guest` (navigation sans
+connexion) et `byUser` (un panier par id de compte DummyJSON). Le panier affiché dépend du compte
+actuellement connecté (store `stores/auth.ts`) :
+
+- Se connecter puis ajouter des articles les range dans `byUser[<id>]` ; se déconnecter fait
+  immédiatement réafficher le panier `guest` (vide si rien n'y a été ajouté en tant qu'invité) — le
+  panier du compte précédent disparaît de l'écran sans être perdu, il réapparaît à la reconnexion.
+- Le bouton **Valider la commande** de `/panier` exige une connexion : un visiteur déconnecté est
+  redirigé vers `/connexion?redirect=/panier` (le panier invité est conservé, la validation reprend
+  après connexion). Une fois validée, la commande vide le panier du compte et affiche un message de
+  confirmation sur la page.
+
 ## Authentification DummyJSON
 
 La page `/connexion` appelle `POST /auth/login` (compte de démonstration : `emilys` / `emilyspass`).

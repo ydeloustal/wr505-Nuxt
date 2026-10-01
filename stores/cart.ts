@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useAuthStore } from '~~/stores/auth'
 import { computeCart, type CartLine } from '~~/utils/promotions'
 
 export interface CartItem {
@@ -16,7 +17,35 @@ interface PersistedCart {
   promoCode?: string
 }
 
+// Un panier "invité" (navigation sans connexion) et un panier par utilisateur connecté (clé :
+// son id DummyJSON) : se déconnecter affiche à nouveau le panier invité, jamais celui du compte
+// précédent, et se reconnecter avec le même compte retrouve son panier.
+interface CartCookiePayload {
+  guest: PersistedCart
+  byUser: Record<string, PersistedCart>
+}
+
 const CART_COOKIE_MAX_AGE = 60 * 60 * 24 * 30
+
+const emptyBucket = (): PersistedCart => ({ items: [], promoCode: undefined })
+
+// Un panier lu depuis le cookie n'est jamais garanti d'avoir la forme attendue : un bucket présent
+// mais sans tableau `items` valide (cookie tronqué, écrit par une version antérieure du code, édité
+// à la main...) doit devenir un panier vide plutôt que laisser passer un `items` manquant, qui ferait
+// planter tout appel à `.reduce`/`.find` en aval.
+const normalizeBucket = (value: Partial<PersistedCart> | null | undefined): PersistedCart => ({
+  items: Array.isArray(value?.items) ? value.items : [],
+  promoCode: value?.promoCode,
+})
+
+// Tolère un cookie au format précédent (plat, sans partition par utilisateur) : il devient le
+// panier invité au lieu de faire planter la lecture.
+const normalizeCookie = (value: Partial<CartCookiePayload & PersistedCart> | null | undefined): CartCookiePayload => {
+  if (value && Array.isArray(value.items)) {
+    return { guest: normalizeBucket(value), byUser: {} }
+  }
+  return { guest: normalizeBucket(value?.guest), byUser: value?.byUser ?? {} }
+}
 
 const toCartLines = (items: CartItem[]): CartLine[] =>
   items.map(({ productId, category, unitPriceCents, quantity }) => ({
@@ -27,22 +56,46 @@ const toCartLines = (items: CartItem[]): CartLine[] =>
   }))
 
 export const useCartStore = defineStore('cart', () => {
+  const auth = useAuthStore()
+
   // On ne persiste que les champs nécessaires au calcul et à l'affichage de la ligne
   // (pas la description, les images ou les avis du produit) pour rester loin de la
   // limite de 4 Ko d'un cookie.
-  const cartCookie = useCookie<PersistedCart>('cart', {
-    default: () => ({ items: [], promoCode: undefined }),
+  const cartCookie = useCookie<CartCookiePayload>('cart', {
+    default: () => ({ guest: emptyBucket(), byUser: {} }),
     maxAge: CART_COOKIE_MAX_AGE,
     sameSite: 'lax',
   })
 
-  const items = ref<CartItem[]>(cartCookie.value.items)
-  const promoCode = ref<string | undefined>(cartCookie.value.promoCode)
+  // Clé du panier actif : celui du compte connecté, ou le panier invité sinon.
+  const bucketKey = computed(() => (auth.user ? String(auth.user.id) : null))
+
+  const readActiveBucket = (): PersistedCart => {
+    const cookie = normalizeCookie(cartCookie.value)
+    return bucketKey.value ? normalizeBucket(cookie.byUser[bucketKey.value]) : cookie.guest
+  }
+
+  const items = ref<CartItem[]>(readActiveBucket().items)
+  const promoCode = ref<string | undefined>(readActiveBucket().promoCode)
   const stockMessage = ref<string | null>(null)
 
   const persist = () => {
-    cartCookie.value = { items: items.value, promoCode: promoCode.value }
+    const cookie = normalizeCookie(cartCookie.value)
+    const bucket = { items: items.value, promoCode: promoCode.value }
+
+    cartCookie.value = bucketKey.value
+      ? { ...cookie, byUser: { ...cookie.byUser, [bucketKey.value]: bucket } }
+      : { ...cookie, guest: bucket }
   }
+
+  // Connexion / déconnexion : on recharge le panier du compte désormais actif au lieu de garder
+  // affiché celui du compte précédent (ou du panier invité).
+  watch(bucketKey, () => {
+    const bucket = readActiveBucket()
+    items.value = bucket.items
+    promoCode.value = bucket.promoCode
+    stockMessage.value = null
+  })
 
   const summary = computed(() => computeCart(toCartLines(items.value), promoCode.value))
   const itemCount = computed(() => items.value.reduce((sum, item) => sum + item.quantity, 0))

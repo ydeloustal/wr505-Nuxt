@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { useAuthStore } from '~~/stores/auth'
 import { useCartStore } from '~~/stores/cart'
 
 const cart = useCartStore()
+const auth = useAuthStore()
 const promoInput = ref(cart.promoCode ?? '')
+const orderConfirmed = ref(false)
 
 const formatCurrency = (cents: number) =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(cents / 100)
@@ -17,6 +20,30 @@ watch(
     promoInput.value = value ?? ''
   },
 )
+
+// Rajouter un article après une commande validée doit faire disparaître le message de
+// confirmation : on repasse en vue panier normale.
+watch(
+  () => cart.itemCount,
+  (count) => {
+    if (count > 0) orderConfirmed.value = false
+  },
+)
+
+const validateOrder = () => {
+  if (!auth.isAuthenticated) {
+    navigateTo({ path: '/connexion', query: { redirect: '/panier' } })
+    return
+  }
+
+  cart.clearCart()
+  orderConfirmed.value = true
+}
+
+useSeoMeta({
+  title: 'Panier | ChampaShop',
+  description: 'Votre panier ChampaShop : articles, code promo et récapitulatif de commande.',
+})
 </script>
 
 <template>
@@ -31,7 +58,14 @@ watch(
 
     <p v-if="cart.stockMessage" class="stock-message" role="alert">{{ cart.stockMessage }}</p>
 
-    <section v-if="cart.items.length === 0" class="empty-state">
+    <section v-if="orderConfirmed" class="confirmation-state" role="status">
+      <p class="confirmation-icon" aria-hidden="true">✓</p>
+      <h2>Commande validée !</h2>
+      <p>Merci pour votre achat. Un récapitulatif vous sera envoyé par e-mail.</p>
+      <NuxtLink to="/produits" class="browse-link">Continuer mes achats</NuxtLink>
+    </section>
+
+    <section v-else-if="cart.items.length === 0" class="empty-state">
       <p>Votre panier est vide.</p>
       <NuxtLink to="/produits" class="browse-link">Découvrir le catalogue</NuxtLink>
     </section>
@@ -98,6 +132,11 @@ watch(
           </div>
         </dl>
 
+        <p v-if="!auth.isAuthenticated" class="login-hint">Connectez-vous pour valider votre commande.</p>
+
+        <button type="button" class="checkout-button" @click="validateOrder">
+          {{ auth.isAuthenticated ? 'Valider la commande' : 'Se connecter pour commander' }}
+        </button>
         <button type="button" class="clear-button" @click="cart.clearCart">Vider le panier</button>
       </aside>
     </section>
@@ -155,13 +194,38 @@ h1 {
   text-align: center;
 }
 
-.empty-state {
+.empty-state,
+.confirmation-state {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 3.5rem 2rem;
   color: var(--color-muted);
   box-shadow: var(--shadow-sm);
+}
+
+.confirmation-state {
+  text-align: center;
+}
+
+.confirmation-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 0 1rem;
+  border-radius: 999px;
+  background: var(--color-success);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.confirmation-state h2 {
+  margin: 0 0 0.5rem;
+  color: var(--color-text);
+  font-size: 1.4rem;
 }
 
 .browse-link {
@@ -356,6 +420,30 @@ h1 {
   font-size: 1.15rem;
   font-weight: 800;
   color: var(--color-text);
+}
+
+.login-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.82rem;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.checkout-button {
+  width: 100%;
+  margin-bottom: 0.6rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-text);
+  color: white;
+  padding: 0.8rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.checkout-button:hover {
+  opacity: 0.92;
 }
 
 .clear-button {
