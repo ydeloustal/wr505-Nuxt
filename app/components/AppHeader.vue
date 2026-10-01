@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useAuthStore } from '~~/stores/auth'
 import { useCartStore } from '~~/stores/cart'
 
 const cart = useCartStore()
+const auth = useAuthStore()
 </script>
 
 <template>
@@ -15,6 +17,9 @@ const cart = useCartStore()
         <NuxtLink to="/" class="nav-link">Accueil</NuxtLink>
         <NuxtLink to="/produits" class="nav-link">Catalogue</NuxtLink>
       </nav>
+
+      <NuxtLink v-if="auth.isAuthenticated" to="/compte" class="nav-link account-link">{{ auth.user?.firstName }}</NuxtLink>
+      <NuxtLink v-else to="/connexion" class="nav-link">Connexion</NuxtLink>
 
       <NuxtLink to="/panier" class="cart-link" aria-label="Voir le panier">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
