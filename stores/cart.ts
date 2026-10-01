@@ -29,13 +29,22 @@ const CART_COOKIE_MAX_AGE = 60 * 60 * 24 * 30
 
 const emptyBucket = (): PersistedCart => ({ items: [], promoCode: undefined })
 
+// Un panier lu depuis le cookie n'est jamais garanti d'avoir la forme attendue : un bucket présent
+// mais sans tableau `items` valide (cookie tronqué, écrit par une version antérieure du code, édité
+// à la main...) doit devenir un panier vide plutôt que laisser passer un `items` manquant, qui ferait
+// planter tout appel à `.reduce`/`.find` en aval.
+const normalizeBucket = (value: Partial<PersistedCart> | null | undefined): PersistedCart => ({
+  items: Array.isArray(value?.items) ? value.items : [],
+  promoCode: value?.promoCode,
+})
+
 // Tolère un cookie au format précédent (plat, sans partition par utilisateur) : il devient le
 // panier invité au lieu de faire planter la lecture.
 const normalizeCookie = (value: Partial<CartCookiePayload & PersistedCart> | null | undefined): CartCookiePayload => {
-  if (value && (Array.isArray(value.items))) {
-    return { guest: { items: value.items, promoCode: value.promoCode }, byUser: {} }
+  if (value && Array.isArray(value.items)) {
+    return { guest: normalizeBucket(value), byUser: {} }
   }
-  return { guest: value?.guest ?? emptyBucket(), byUser: value?.byUser ?? {} }
+  return { guest: normalizeBucket(value?.guest), byUser: value?.byUser ?? {} }
 }
 
 const toCartLines = (items: CartItem[]): CartLine[] =>
@@ -63,7 +72,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const readActiveBucket = (): PersistedCart => {
     const cookie = normalizeCookie(cartCookie.value)
-    return bucketKey.value ? (cookie.byUser[bucketKey.value] ?? emptyBucket()) : cookie.guest
+    return bucketKey.value ? normalizeBucket(cookie.byUser[bucketKey.value]) : cookie.guest
   }
 
   const items = ref<CartItem[]>(readActiveBucket().items)
