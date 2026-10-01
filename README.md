@@ -139,8 +139,8 @@ régression de tests sur le moteur de promotions.
 
 | Membre | Rôle |
 | --- | --- |
-| Maxime | Catalogue produits (F1), moteur de promotions (F4) et authentification DummyJSON (F5) |
-| Yoan | Setup projet, CI/CD, outillage, missions de la semaine |
+| Maxime | Première version du catalogue (F1) et moteur de promotions (F4), authentification DummyJSON (F5), panier rattaché au compte et validation de commande, borne de prix fixe du catalogue |
+| Yoan | Setup projet, CI/CD, outillage (étape 0), finalisation du catalogue (F1 : composants, composables, URL source de vérité, stratégie de filtre prix), fiche produit (F2), panier avec plafond de stock et persistance cookie (F3) |
 
 ## Usage de l’IA
 
