@@ -4,8 +4,8 @@ import {
   ALL_CATEGORIES,
   countByCategory,
   filterProducts,
-  getPriceCeiling,
   paginate,
+  PRICE_CEILING,
   sortProducts,
   type CatalogFilters,
 } from '~~/utils/catalog'
@@ -26,7 +26,5 @@ export function useCatalogView(products: Ref<ProductSummary[]>, filters: Ref<Cat
     Object.values(categoryCounts.value).reduce((sum, count) => sum + count, 0),
   )
 
-  const priceCeiling = computed(() => getPriceCeiling(products.value))
-
-  return { pagination, categoryCounts, categoryTotal, priceCeiling }
+  return { pagination, categoryCounts, categoryTotal, priceCeiling: PRICE_CEILING }
 }

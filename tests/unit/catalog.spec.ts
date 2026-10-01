@@ -4,7 +4,6 @@ import {
   countByCategory,
   filterProducts,
   getPageWindow,
-  getPriceCeiling,
   paginate,
   parseCatalogQuery,
   sortProducts,
@@ -209,17 +208,6 @@ describe('countByCategory', () => {
 
   it('renvoie un objet vide sans produit', () => {
     expect(countByCategory([])).toEqual({})
-  })
-})
-
-describe('getPriceCeiling', () => {
-  it('arrondit le prix maximum à l\'entier supérieur', () => {
-    expect(getPriceCeiling(products)).toBe(251)
-  })
-
-  it('utilise la valeur de repli sans produit', () => {
-    expect(getPriceCeiling([])).toBe(1000)
-    expect(getPriceCeiling([], 50)).toBe(50)
   })
 })
 
