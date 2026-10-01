@@ -47,3 +47,21 @@ export interface Category {
   name: string
   url: string
 }
+
+/** Utilisateur DummyJSON tel que renvoyé par /auth/login et /auth/me. */
+export interface AuthUser {
+  id: number
+  username: string
+  email: string
+  firstName: string
+  lastName: string
+  gender: string
+  image: string
+}
+
+export interface AuthTokens {
+  accessToken: string
+  refreshToken: string
+}
+
+export type AuthLoginResponse = AuthUser & AuthTokens
