@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.1] - 2026-10-07
+
+### Corrigé
+- Le panier constitué sans être connecté n'est plus perdu à la connexion : il est fusionné dans le panier du compte (quantités cumulées, plafonnées au stock).
+
 ## [0.1.0] - 2026-10-01
 
 Première version : socle du projet et fonctionnalités de la semaine 1.
