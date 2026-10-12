@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.2] - 2026-10-12
+
+### Modifié
+- README : ajout de l'URL du site déployé.
+- CI : les tests tournent avec `test:coverage`, le seuil de 90 % (lignes et branches) sur `utils/` fait échouer la CI.
+
 ## [0.1.1] - 2026-10-07
 
 ### Corrigé
