@@ -2,7 +2,7 @@
 
 Boutique fictive construite avec Nuxt 4, Pinia et Vitest. Le projet met en œuvre un catalogue produit, une logique de promotions front-only, et une expérience de navigation compatible SSR et partageable via l’URL.
 
-Site déployé : _à compléter (URL Vercel/Netlify branchée sur `main`)_
+Site déployé : https://wr505-nuxt.netlify.app/
 
 ## Démarrage
 
