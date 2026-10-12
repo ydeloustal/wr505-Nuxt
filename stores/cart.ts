@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useAuthStore } from '~~/stores/auth'
+import { mergeCartItems } from '~~/utils/cart'
 import { computeCart, type CartLine } from '~~/utils/promotions'
 
 export interface CartItem {
@@ -18,8 +19,9 @@ interface PersistedCart {
 }
 
 // Un panier "invité" (navigation sans connexion) et un panier par utilisateur connecté (clé :
-// son id DummyJSON) : se déconnecter affiche à nouveau le panier invité, jamais celui du compte
-// précédent, et se reconnecter avec le même compte retrouve son panier.
+// son id DummyJSON) : se connecter verse le panier invité dans celui du compte, se déconnecter
+// affiche un panier invité vide (jamais celui du compte précédent), et se reconnecter avec le même
+// compte retrouve son panier.
 interface CartCookiePayload {
   guest: PersistedCart
   byUser: Record<string, PersistedCart>
@@ -75,6 +77,31 @@ export const useCartStore = defineStore('cart', () => {
     return bucketKey.value ? normalizeBucket(cookie.byUser[bucketKey.value]) : cookie.guest
   }
 
+  // À la connexion, le panier constitué en tant qu'invité est versé dans celui du compte (quantités
+  // cumulées, plafonnées au stock) puis vidé : il ne doit ni disparaître de l'écran, ni rester
+  // visible une fois déconnecté, ni être fusionné une seconde fois à la prochaine connexion.
+  const adoptGuestCart = () => {
+    const key = bucketKey.value
+    const cookie = normalizeCookie(cartCookie.value)
+    if (!key || !cookie.guest.items.length) return
+
+    const account = normalizeBucket(cookie.byUser[key])
+
+    cartCookie.value = {
+      guest: emptyBucket(),
+      byUser: {
+        ...cookie.byUser,
+        [key]: {
+          items: mergeCartItems(account.items, cookie.guest.items),
+          promoCode: account.promoCode ?? cookie.guest.promoCode,
+        },
+      },
+    }
+  }
+
+  // Couvre aussi le cas où le store est créé alors que l'utilisateur est déjà connecté.
+  adoptGuestCart()
+
   const items = ref<CartItem[]>(readActiveBucket().items)
   const promoCode = ref<string | undefined>(readActiveBucket().promoCode)
   const stockMessage = ref<string | null>(null)
@@ -91,6 +118,7 @@ export const useCartStore = defineStore('cart', () => {
   // Connexion / déconnexion : on recharge le panier du compte désormais actif au lieu de garder
   // affiché celui du compte précédent (ou du panier invité).
   watch(bucketKey, () => {
+    adoptGuestCart()
     const bucket = readActiveBucket()
     items.value = bucket.items
     promoCode.value = bucket.promoCode

@@ -67,9 +67,12 @@ Le cookie `cart` ne contient plus un seul panier mais deux compartiments : `gues
 connexion) et `byUser` (un panier par id de compte DummyJSON). Le panier affiché dépend du compte
 actuellement connecté (store `stores/auth.ts`) :
 
-- Se connecter puis ajouter des articles les range dans `byUser[<id>]` ; se déconnecter fait
-  immédiatement réafficher le panier `guest` (vide si rien n'y a été ajouté en tant qu'invité) — le
-  panier du compte précédent disparaît de l'écran sans être perdu, il réapparaît à la reconnexion.
+- Un panier constitué sans être connecté est **conservé à la connexion** : il est versé dans
+  `byUser[<id>]` (les quantités d'un même produit sont cumulées et plafonnées au stock, fonction
+  pure `mergeCartItems` de `utils/cart.ts`), puis le compartiment `guest` est vidé.
+- Les articles ajoutés une fois connecté vont dans `byUser[<id>]` ; se déconnecter fait
+  immédiatement réafficher le panier `guest`, désormais vide — le panier du compte disparaît de
+  l'écran sans être perdu, il réapparaît à la reconnexion.
 - Le bouton **Valider la commande** de `/panier` exige une connexion : un visiteur déconnecté est
   redirigé vers `/connexion?redirect=/panier` (le panier invité est conservé, la validation reprend
   après connexion). Une fois validée, la commande vide le panier du compte et affiche un message de
