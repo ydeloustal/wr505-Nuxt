@@ -28,33 +28,23 @@ const { isSelected, toggle } = useCompare()
 .compare-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  min-height: 36px;
-  padding: 0.3rem 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-surface);
-  color: var(--color-text);
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-muted);
   font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .compare-button:hover {
-  border-color: var(--color-brand);
-  color: var(--color-brand);
+  color: var(--color-text);
 }
 
 .compare-button.selected {
-  background: var(--color-brand);
-  border-color: var(--color-brand);
-  color: white;
-}
-
-.compare-button:focus-visible {
-  outline: 2px solid var(--color-brand);
-  outline-offset: 2px;
+  color: var(--color-text);
+  font-weight: 600;
 }
 </style>

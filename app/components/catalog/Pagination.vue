@@ -60,7 +60,7 @@ const goTo = (page: number) => {
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 3rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--color-border);
 }
@@ -75,29 +75,32 @@ const goTo = (page: number) => {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .page-buttons button {
   min-width: 44px;
   min-height: 44px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-surface);
+  padding: 0 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
   color: var(--color-text);
   font: inherit;
-  font-weight: 600;
   cursor: pointer;
 }
 
+.page-buttons button:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
 .page-buttons button.active {
-  background: var(--color-text);
   border-color: var(--color-text);
-  color: white;
+  font-weight: 600;
 }
 
 .page-buttons button:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -116,20 +119,20 @@ const goTo = (page: number) => {
 }
 
 .page-jump input {
-  width: 52px;
-  min-height: 40px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-surface);
+  width: 56px;
+  min-height: 44px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: #fff;
   text-align: center;
   font: inherit;
   color: var(--color-text);
 }
 
 .page-jump input:focus {
-  outline: none;
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  outline: 2px solid var(--color-link);
+  outline-offset: 1px;
+  border-color: var(--color-link);
 }
 
 @media (max-width: 900px) {

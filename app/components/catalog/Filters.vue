@@ -185,11 +185,11 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 <style scoped>
 .filters-aside {
   position: sticky;
-  top: 75px;
-  max-height: calc(100vh - 75px);
+  top: 125px;
+  max-height: calc(100vh - 125px);
   overflow-y: auto;
   border-right: 1px solid var(--color-border);
-  padding: 2.5rem 2rem 2.5rem 2.5rem;
+  padding: 2rem 2rem 2rem 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -227,8 +227,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 .search-input input {
   width: 100%;
   min-height: 48px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
   background: var(--color-surface);
   padding: 0 1rem 0 2.6rem;
   font: inherit;
@@ -249,8 +249,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   min-height: 44px;
   cursor: pointer;
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -294,8 +294,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 }
 
 .option-list button.active {
-  color: var(--color-brand-dark);
-  font-weight: 700;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
 }
 
 .count {
@@ -345,26 +347,25 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   pointer-events: auto;
   width: 20px;
   height: 20px;
-  border-radius: 999px;
+  border-radius: 50%;
   background: var(--color-surface);
   border: 2px solid var(--color-brand);
-  box-shadow: 0 2px 6px rgba(20, 20, 26, 0.15);
-  cursor: grab;
+    cursor: grab;
 }
 
 .price-slider input[type='range']::-moz-range-thumb {
   pointer-events: auto;
   width: 16px;
   height: 16px;
-  border-radius: 999px;
+  border-radius: 50%;
   background: var(--color-surface);
   border: 2px solid var(--color-brand);
-  box-shadow: 0 2px 6px rgba(20, 20, 26, 0.15);
-  cursor: grab;
+    cursor: grab;
 }
 
 .price-slider input[type='range']:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.25);
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
 }
 
 .price-range-labels {
@@ -398,9 +399,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
 .search-input input:focus,
 .price-fields input:focus {
-  outline: none;
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  outline: 2px solid var(--color-link);
+  outline-offset: 1px;
+  border-color: var(--color-link);
 }
 
 .reset-button,
@@ -431,7 +432,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
       position: fixed;
       inset: 0;
       z-index: 50;
-      background: rgba(20, 20, 26, 0.5);
+      background: rgba(22, 22, 22, 0.45);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease;
@@ -483,8 +484,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
       width: 44px;
       height: 44px;
       border: none;
-      border-radius: 999px;
-      background: #f3f2ee;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-2);
       color: var(--color-text);
       display: flex;
       align-items: center;

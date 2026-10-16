@@ -15,27 +15,23 @@ import { PAGE_SIZE } from '~~/utils/catalog'
 
 <style scoped>
 .skeleton-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  padding: 0.875rem;
+  display: grid;
+  gap: 0.6rem;
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #f3f2ee 25%, #e7e5e0 50%, #f3f2ee 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.2s linear infinite;
-  border-radius: 12px;
+  background: var(--color-tile);
+  animation: pulse 1.4s ease-in-out infinite;
+  border-radius: var(--radius-sm);
 }
 
 .skeleton.image { width: 100%; aspect-ratio: 1; }
-.skeleton.line { height: 14px; margin-top: 0.8rem; }
-.skeleton.line.short { width: 60%; }
-.skeleton.line.tiny { width: 35%; }
+.skeleton.line { height: 14px; }
+.skeleton.line.short { width: 40%; }
+.skeleton.line.tiny { width: 30%; }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 </style>

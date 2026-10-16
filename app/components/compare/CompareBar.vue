@@ -43,25 +43,22 @@ const { ids, message, clear } = useCompare()
 
 .compare-bar {
   position: fixed;
-  left: 50%;
-  bottom: 1rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 50;
-  transform: translateX(-50%);
-  width: min(560px, calc(100% - 2rem));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.75rem 1rem;
-  background: var(--color-text);
-  color: white;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  padding: 0.6rem max(1.5rem, calc((100% - 1180px) / 2 + 1.5rem));
+  background: #fff;
+  border-top: 1px solid var(--color-text);
 }
 
 .count {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
 }
 
 .actions {
@@ -71,33 +68,48 @@ const { ids, message, clear } = useCompare()
 }
 
 .hint {
-  font-size: 0.75rem;
-  opacity: 0.75;
+  font-size: 0.8rem;
+  color: var(--color-muted);
 }
 
 .clear {
+  min-height: 44px;
+  padding: 0;
   background: none;
   border: none;
-  color: inherit;
+  color: var(--color-link);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 500;
   text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 
 .go {
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
-  background: var(--color-brand);
-  color: white;
-  font-weight: 700;
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-text);
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.9rem;
   text-decoration: none;
 }
 
-.clear:focus-visible,
-.go:focus-visible {
-  outline: 2px solid white;
-  outline-offset: 2px;
+.go:hover {
+  background: var(--color-brand-dark);
+}
+
+@media (max-width: 640px) {
+  .compare-bar {
+    padding-inline: 1rem;
+  }
+
+  .count {
+    font-size: 0.82rem;
+  }
 }
 </style>

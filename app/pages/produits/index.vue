@@ -96,10 +96,9 @@ useSeoMeta({
     <main class="catalog-page">
       <header class="catalog-header">
         <div>
-          <p class="eyebrow">ChampaShop</p>
-          <h1>Catalogue produits</h1>
+          <h1>Catalogue</h1>
         </div>
-        <p v-if="status === 'success'" class="result-count" aria-live="polite">{{ pagination.total }} produit(s) trouvé(s)</p>
+        <p v-if="status === 'success'" class="result-count" aria-live="polite">{{ pagination.total }} produit{{ pagination.total > 1 ? 's' : '' }}</p>
       </header>
 
       <div class="mobile-toolbar">
@@ -152,19 +151,20 @@ useSeoMeta({
 
 <style scoped>
 .catalog-layout {
-  max-width: 1440px;
+  max-width: 1180px;
   margin: 0 auto;
+  padding-inline: 1.5rem;
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: 260px minmax(0, 1fr);
   align-items: start;
 }
 
 .catalog-page {
   min-width: 0;
-  padding: 2.5rem 2.5rem 4rem;
+  padding: 2rem 0 4rem 2.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .catalog-header {
@@ -174,26 +174,16 @@ useSeoMeta({
   gap: 1rem;
 }
 
-.eyebrow {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-brand);
-}
-
 h1 {
-  margin: 0.15rem 0 0;
-  font-size: clamp(1.9rem, 4vw, 2.75rem);
+  margin: 0;
+  font-size: 1.9rem;
   letter-spacing: -0.02em;
 }
 
 .result-count {
-  margin: 0 0 0.5rem;
+  margin: 0;
   color: var(--color-muted);
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.92rem;
 }
 
 .active-chips {
@@ -206,23 +196,22 @@ h1 {
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.15rem;
   min-height: 36px;
-  padding: 0 0.35rem 0 0.9rem;
-  border-radius: 999px;
+  padding: 0 0.35rem 0 0.7rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
   font-size: 0.875rem;
-  font-weight: 600;
 }
 
 .chip button {
   width: 28px;
   height: 28px;
   border: none;
-  border-radius: 999px;
-  background: #f3f2ee;
-  color: var(--color-text);
+  border-radius: 3px;
+  background: none;
+  color: var(--color-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -231,7 +220,8 @@ h1 {
 }
 
 .chip button:hover {
-  background: #e7e5e0;
+  background: var(--color-surface-2);
+  color: var(--color-text);
 }
 
 .mobile-toolbar {
@@ -239,73 +229,69 @@ h1 {
 }
 
 .mobile-toolbar select:focus {
-  outline: none;
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  outline: 2px solid var(--color-link);
+  outline-offset: 1px;
 }
 
 @media (max-width: 900px) {
-    .catalog-layout {
-      display: block;
-    }
+  .catalog-layout {
+    display: block;
+    padding-inline: 1rem;
+  }
 
-    .catalog-page {
-      padding: 1.5rem 1rem 3rem;
-      gap: 1rem;
-    }
+  .catalog-page {
+    padding: 1.25rem 0 3rem;
+    gap: 1rem;
+  }
 
-    .catalog-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.25rem;
-    }
+  .catalog-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
 
-    .result-count {
-      margin: 0;
-    }
+  .mobile-toolbar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
 
-    .mobile-toolbar {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.625rem;
-    }
+  .filters-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--color-text);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+  }
 
-    .filters-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      min-height: 44px;
-      border: none;
-      border-radius: 12px;
-      background: var(--color-text);
-      color: white;
-      font: inherit;
-      font-weight: 600;
-      cursor: pointer;
-    }
+  .filters-badge {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: var(--color-text);
+    color: #fff;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .filters-badge {
-      min-width: 20px;
-      height: 20px;
-      border-radius: 999px;
-      background: var(--color-brand);
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .mobile-toolbar select {
-      min-height: 44px;
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      background: var(--color-surface);
-      padding: 0 0.75rem;
-      font: inherit;
-      font-weight: 600;
-      color: var(--color-text);
-    }
+  .mobile-toolbar select {
+    min-height: 44px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    padding: 0 0.75rem;
+    font: inherit;
+    color: var(--color-text);
+  }
 }
 </style>
