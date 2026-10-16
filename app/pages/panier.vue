@@ -48,26 +48,32 @@ useSeoMeta({
 
 <template>
   <main class="cart-page">
+    <nav class="crumbs" aria-label="Fil d’Ariane">
+      <NuxtLink to="/produits">← Continuer mes achats</NuxtLink>
+    </nav>
+
     <header class="cart-header">
-      <div>
-        <p class="eyebrow">ChampaShop</p>
-        <h1>Votre panier</h1>
-      </div>
-      <NuxtLink to="/produits" class="continue-link">← Continuer mes achats</NuxtLink>
+      <h1>Panier</h1>
+      <p v-if="cart.itemCount > 0 && !orderConfirmed" class="count">{{ cart.itemCount }} article{{ cart.itemCount > 1 ? 's' : '' }}</p>
     </header>
+
+    <ol class="steps" aria-label="Étapes de commande">
+      <li :aria-current="!orderConfirmed ? 'step' : undefined">1 Panier</li>
+      <li>2 Connexion</li>
+      <li :aria-current="orderConfirmed ? 'step' : undefined">3 Confirmation</li>
+    </ol>
 
     <p v-if="cart.stockMessage" class="stock-message" role="alert">{{ cart.stockMessage }}</p>
 
     <section v-if="orderConfirmed" class="confirmation-state" role="status">
-      <p class="confirmation-icon" aria-hidden="true">✓</p>
       <h2>Commande validée !</h2>
       <p>Merci pour votre achat. Un récapitulatif vous sera envoyé par e-mail.</p>
-      <NuxtLink to="/produits" class="browse-link">Continuer mes achats</NuxtLink>
+      <NuxtLink to="/produits" class="btn browse-link">Continuer mes achats</NuxtLink>
     </section>
 
     <section v-else-if="cart.items.length === 0" class="empty-state">
       <p>Votre panier est vide.</p>
-      <NuxtLink to="/produits" class="browse-link">Découvrir le catalogue</NuxtLink>
+      <NuxtLink to="/produits" class="btn browse-link">Découvrir le catalogue</NuxtLink>
     </section>
 
     <section v-else class="cart-layout">
@@ -93,7 +99,7 @@ useSeoMeta({
               >
             </label>
             <p class="line-total">{{ formatCurrency(item.unitPriceCents * item.quantity) }}</p>
-            <button type="button" class="remove-button" aria-label="Retirer l'article" @click="cart.removeItem(item.productId)">✕</button>
+            <button type="button" class="remove-button" :aria-label="`Retirer ${item.title} du panier`" @click="cart.removeItem(item.productId)">Retirer</button>
           </div>
         </li>
       </ul>
@@ -104,8 +110,8 @@ useSeoMeta({
         <label class="promo-field">
           <span>Code promo</span>
           <div class="promo-input">
-            <input v-model="promoInput" type="text" placeholder="BEAUTY_3, TROYES10..." @keyup.enter="applyPromo" >
-            <button type="button" @click="applyPromo">Appliquer</button>
+            <input v-model="promoInput" type="text" placeholder="TROYES10" autocomplete="off" @keyup.enter="applyPromo" >
+            <button type="button" class="btn ghost" @click="applyPromo">Appliquer</button>
           </div>
         </label>
 
@@ -134,7 +140,7 @@ useSeoMeta({
 
         <p v-if="!auth.isAuthenticated" class="login-hint">Connectez-vous pour valider votre commande.</p>
 
-        <button type="button" class="checkout-button" @click="validateOrder">
+        <button type="button" class="btn checkout-button" @click="validateOrder">
           {{ auth.isAuthenticated ? 'Valider la commande' : 'Se connecter pour commander' }}
         </button>
         <button type="button" class="clear-button" @click="cart.clearCart">Vider le panier</button>
@@ -145,186 +151,198 @@ useSeoMeta({
 
 <style scoped>
 .cart-page {
-  max-width: 1100px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
+  padding: 0 1.5rem 4rem;
+}
+
+.crumbs {
+  padding-block: 1rem 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.crumbs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  text-decoration: none;
+}
+
+.crumbs a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
 }
 
 .cart-header {
   display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.stock-message {
-  margin: -0.75rem 0 1.5rem;
-  padding: 0.75rem 0.9rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: var(--radius-sm);
-  color: var(--color-danger);
-  font-size: 0.85rem;
-}
-
-.eyebrow {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-brand);
+  align-items: baseline;
+  gap: 0.75rem;
 }
 
 h1 {
-  margin: 0.15rem 0 0;
-  font-size: clamp(2rem, 4vw, 2.6rem);
+  margin: 0;
+  font-size: 1.9rem;
   letter-spacing: -0.02em;
 }
 
-.continue-link {
-  text-decoration: none;
+.count {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 1rem 0 1.5rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.steps [aria-current] {
   color: var(--color-text);
   font-weight: 600;
 }
 
-.empty-state,
-.browse-link {
-  text-align: center;
+.stock-message {
+  margin: 0 0 1.25rem;
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--color-danger);
+  background: var(--color-surface-2);
+  color: var(--color-danger);
+  font-size: 0.88rem;
 }
 
 .empty-state,
 .confirmation-state {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 3.5rem 2rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 3.5rem 1rem;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  text-align: center;
   color: var(--color-muted);
-  box-shadow: var(--shadow-sm);
-}
-
-.confirmation-state {
-  text-align: center;
-}
-
-.confirmation-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  margin: 0 0 1rem;
-  border-radius: 999px;
-  background: var(--color-success);
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 800;
 }
 
 .confirmation-state h2 {
-  margin: 0 0 0.5rem;
+  margin: 0;
   color: var(--color-text);
   font-size: 1.4rem;
 }
 
+.empty-state p,
+.confirmation-state p {
+  margin: 0;
+}
+
 .browse-link {
-  display: inline-block;
   margin-top: 1rem;
-  background: var(--color-text);
-  color: white;
-  text-decoration: none;
-  border-radius: 999px;
-  padding: 0.75rem 1.5rem;
-  font-weight: 700;
 }
 
 .cart-layout {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 3.5rem;
   align-items: start;
 }
 
 .cart-lines {
-  list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+  list-style: none;
+  border-top: 1px solid var(--color-text);
 }
 
 .cart-line {
   display: grid;
-  grid-template-columns: 72px 1fr auto;
-  gap: 1rem;
+  grid-template-columns: 84px minmax(0, 1fr) auto;
+  gap: 1.25rem;
   align-items: center;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 0.9rem;
-  box-shadow: var(--shadow-sm);
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .cart-line img {
-  width: 72px;
-  height: 72px;
+  width: 84px;
+  height: 84px;
   object-fit: cover;
   border-radius: var(--radius-sm);
-  background: #f3f2ee;
+  background: var(--color-tile);
 }
 
 .line-category {
   margin: 0;
-  color: var(--color-brand);
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  color: var(--color-muted);
 }
 
 .line-info h2 {
-  margin: 0.15rem 0;
+  margin: 0.1rem 0 0;
   font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .line-price {
-  margin: 0;
+  margin: 0.1rem 0 0;
+  font-size: 0.88rem;
   color: var(--color-muted);
-  font-size: 0.85rem;
 }
 
 .line-controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
   align-items: center;
-  gap: 0.75rem;
-}
-
-.qty-field input {
-  width: 56px;
-  padding: 0.5rem;
-  text-align: center;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font: inherit;
-  background: #fafaf9;
+  justify-items: end;
+  gap: 0.5rem 0.75rem;
 }
 
 .line-total {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: end;
   margin: 0;
-  font-weight: 700;
-  min-width: 80px;
-  text-align: right;
+  font-weight: 600;
+}
+
+.qty-field,
+.remove-button {
+  grid-row: 2;
+}
+
+.qty-field input {
+  width: 72px;
+  min-height: 44px;
+  padding: 0 0.6rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: var(--color-text);
+  background: #fff;
+}
+
+.qty-field input:hover {
+  border-color: var(--color-text);
 }
 
 .remove-button {
-  border: none;
-  background: transparent;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.85rem;
   color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
-  font-size: 1rem;
-  padding: 0.25rem;
 }
 
 .remove-button:hover {
@@ -332,151 +350,172 @@ h1 {
 }
 
 .summary-panel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
   position: sticky;
-  top: 90px;
+  top: 125px;
+  display: grid;
+  gap: 1.1rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-2);
 }
 
 .summary-panel h2 {
-  margin: 0 0 1rem;
+  margin: 0;
   font-size: 1.1rem;
 }
 
 .promo-field {
-  display: block;
-  margin-bottom: 1rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-muted);
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .promo-input {
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.4rem;
 }
 
 .promo-input input {
   flex: 1;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--color-border);
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 0.8rem;
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
-  font: inherit;
-  background: #fafaf9;
+  background: #fff;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
 }
 
-.promo-input button {
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-text);
-  color: white;
-  padding: 0.6rem 0.9rem;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
+.promo-input input:hover {
+  border-color: var(--color-text);
+}
+
+.promo-input .btn {
+  min-height: 44px;
+  padding: 0 1rem;
+  font-size: 0.88rem;
 }
 
 .messages {
-  margin: 0 0 1rem;
-  padding: 0.75rem 0.9rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: var(--radius-sm);
-  color: var(--color-danger);
-  font-size: 0.82rem;
+  margin: 0;
+  padding: 0;
   list-style: none;
-}
-
-.messages li + li {
-  margin-top: 0.3rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--color-danger);
 }
 
 .totals {
-  margin: 0 0 1.25rem;
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 0.55rem;
+  margin: 0;
 }
 
 .totals-row {
   display: flex;
   justify-content: space-between;
-  margin: 0;
+  gap: 1rem;
   font-size: 0.92rem;
+}
+
+.totals-row dt {
   color: var(--color-muted);
 }
 
-.totals-row.discount {
+.totals-row dd {
+  margin: 0;
+}
+
+.totals-row.discount dt,
+.totals-row.discount dd {
   color: var(--color-success);
 }
 
 .totals-row.total {
-  border-top: 1px solid var(--color-border);
-  padding-top: 0.6rem;
-  font-size: 1.15rem;
-  font-weight: 800;
+  margin-top: 0.3rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--color-text);
+}
+
+.totals-row.total dt {
   color: var(--color-text);
+  font-weight: 600;
+}
+
+.totals-row.total dd {
+  font-size: 1.35rem;
+  font-weight: 600;
 }
 
 .login-hint {
-  margin: 0 0 0.75rem;
-  font-size: 0.82rem;
+  margin: 0;
+  font-size: 0.85rem;
   color: var(--color-muted);
   text-align: center;
 }
 
 .checkout-button {
-  width: 100%;
-  margin-bottom: 0.6rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-text);
-  color: white;
-  padding: 0.8rem;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.checkout-button:hover {
-  opacity: 0.92;
+  min-height: 52px;
+  font-size: 1rem;
 }
 
 .clear-button {
-  width: 100%;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-muted);
-  padding: 0.7rem;
+  justify-self: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
   font: inherit;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 
 .clear-button:hover {
-  background: #f3f2ee;
+  color: var(--color-danger);
 }
 
-@media (max-width: 820px) {
+@media (max-width: 900px) {
   .cart-layout {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .summary-panel {
     position: static;
   }
+}
 
-  .cart-line {
-    grid-template-columns: 56px 1fr;
-    grid-template-areas: 'img info' 'controls controls';
+@media (max-width: 640px) {
+  .cart-page {
+    padding-inline: 1rem;
   }
 
-  .cart-line img { grid-area: img; width: 56px; height: 56px; }
-  .line-info { grid-area: info; }
-  .line-controls { grid-area: controls; justify-content: space-between; margin-top: 0.5rem; }
+  .cart-line {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .cart-line img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .line-controls {
+    grid-column: 1 / -1;
+    grid-template-columns: auto 1fr auto;
+    justify-items: start;
+  }
+
+  .line-total {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: start;
+  }
 }
 </style>
