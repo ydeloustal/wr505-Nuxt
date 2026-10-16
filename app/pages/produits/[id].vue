@@ -143,6 +143,10 @@ const addToCart = () => {
           </button>
         </div>
 
+        <div class="compare-actions">
+          <CompareButton :product-id="product.id" :title="product.title" />
+        </div>
+
         <p v-if="cart.stockMessage" class="stock-message" role="alert">{{ cart.stockMessage }}</p>
       </div>
     </article>
@@ -290,6 +294,10 @@ h1 {
   border-radius: 999px;
   padding: 0.35rem 0.7rem;
   font-size: 0.8rem;
+}
+
+.compare-actions {
+  margin-top: 0.75rem;
 }
 
 .cart-actions {

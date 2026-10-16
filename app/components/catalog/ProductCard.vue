@@ -43,6 +43,10 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
       </div>
     </NuxtLink>
 
+    <div class="card-compare">
+      <CompareButton :product-id="product.id" :title="product.title" />
+    </div>
+
     <div class="card-foot">
       <span class="price">{{ formatPrice(product.price) }}</span>
       <button
@@ -141,6 +145,10 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
   color: #b45309;
   font-weight: 600;
   font-size: 0.8rem;
+}
+
+.card-compare {
+  padding: 0.5rem 0.875rem 0;
 }
 
 .card-foot {
