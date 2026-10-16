@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquettes ChampaShop, version sobre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --tile: #f1f1ee;
+  --surface-2: #f7f7f5;
+  --line: #e4e4e0;
+  --line-strong: #c9c9c3;
+  --text: #161616;
+  --muted: #5f5f5a;
+  --accent: #1f3f7a;
+  --sale: #9a3412;
+  --ok: #2f6b3f;
+  --warn: #8a5a00;
+  --danger: #b42318;
+  --radius: 4px;
+  --font: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font-family: var(--font); background: #e8e8e4; color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+h1, h2, h3 { margin: 0; line-height: 1.2; letter-spacing: -.015em; font-weight: 600; }
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+ul, ol { list-style: none; margin: 0; padding: 0; }
+svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+svg.i.sm { width: 16px; height: 16px; }
+svg.i.fill { fill: currentColor; stroke: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Présentation ---------- */
+.stage-bar { position: sticky; top: 0; z-index: 50; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1.5rem; padding: .6rem 1.25rem; background: #161616; color: #fff; }
+.stage-bar h1 { font-size: .95rem; font-weight: 600; color: #fff; }
+.stage-bar h1 small { font-weight: 400; opacity: .65; margin-left: .5rem; }
+.stage-tabs, .stage-device { display: flex; gap: .15rem; flex-wrap: wrap; }
+.stage-tabs button, .stage-device button { min-height: 40px; padding: 0 .85rem; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #bdbdb6; font-size: .9rem; border-radius: 0; }
+.stage-tabs button:hover, .stage-device button:hover { color: #fff; }
+.stage-tabs button[aria-selected="true"], .stage-device button[aria-pressed="true"] { color: #fff; border-bottom-color: #fff; font-weight: 600; }
+.stage { padding: 1.5rem 1rem 2rem; display: flex; justify-content: center; }
+.device { width: min(100%, 1280px); background: var(--bg); border: 1px solid #bdbdb6; border-radius: 8px; overflow: hidden; transition: width .3s ease; }
+.device.mobile { width: 390px; border: 9px solid #161616; border-radius: 30px; }
+.viewport { height: min(820px, calc(100vh - 150px)); min-height: 560px; overflow-y: auto; overflow-x: hidden; container-type: inline-size; position: relative; transform: translateZ(0); }
+body.full .viewport { height: auto; overflow: visible; transform: none; }
+.notes { max-width: 1280px; margin: 0 auto; padding: 0 1rem 3rem; color: #33332f; font-size: .92rem; }
+.notes h2 { font-size: 1.05rem; margin-bottom: .5rem; }
+.notes ul { display: grid; gap: .3rem; padding-left: 1.1rem; list-style: disc; }
+
+/* ---------- Composants ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: 0 1.25rem; border: 1px solid var(--text); border-radius: var(--radius); background: var(--text); color: #fff; font-weight: 500; font-size: .95rem; white-space: nowrap; transition: background .2s ease, border-color .2s ease, color .2s ease; }
+.btn:hover { background: #3a3a37; border-color: #3a3a37; }
+.btn.ghost { background: #fff; color: var(--text); border-color: var(--line-strong); }
+.btn.ghost:hover { border-color: var(--text); background: #fff; }
+.btn.lg { min-height: 52px; padding: 0 1.75rem; font-size: 1rem; }
+.btn.block { width: 100%; }
+.btn.sm { min-height: 44px; padding: 0 1rem; font-size: .88rem; }
+.link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; padding: 0; min-height: 44px; display: inline-flex; align-items: center; gap: .3rem; font-weight: 500; font-size: .92rem; }
+.link:hover { text-decoration-thickness: 2px; }
+.label-s { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.muted { color: var(--muted); }
+.sale { color: var(--sale); font-weight: 500; }
+.rating { font-size: .85rem; color: var(--muted); }
+.rating b { color: var(--text); font-weight: 500; }
+.tag { display: inline-flex; align-items: center; gap: .15rem; min-height: 32px; padding: 0 .35rem 0 .7rem; border: 1px solid var(--line-strong); border-radius: var(--radius); font-size: .85rem; }
+.tag button { width: 28px; height: 28px; border: 0; background: none; display: grid; place-items: center; color: var(--muted); border-radius: 3px; }
+.tag button:hover { color: var(--text); background: var(--surface-2); }
+
+.screen[hidden] { display: none; }
+.wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding-inline: 1.5rem; }
+.tile { background: var(--tile); display: grid; place-items: center; position: relative; }
+.tile .glyph { width: 34%; height: 34%; fill: none; stroke: #8d8d86; stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- En-tête ---------- */
+.announce { border-bottom: 1px solid var(--line); font-size: .8rem; color: var(--muted); text-align: center; padding: .45rem 1rem; }
+.header { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid var(--line); }
+.header .wrap { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 2rem; min-height: 68px; }
+.logo { font-weight: 600; font-size: 1.25rem; letter-spacing: -.02em; min-height: 44px; display: inline-flex; align-items: center; }
+.search { position: relative; max-width: 520px; width: 100%; margin-inline: auto; }
+.search svg { position: absolute; left: .85rem; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.search input { width: 100%; min-height: 44px; padding: 0 .9rem 0 2.6rem; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
+.search input::placeholder { color: #6d6d68; }
+.search input:hover { border-color: var(--text); }
+.search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.header-actions { display: flex; align-items: center; gap: .25rem; }
+.nav-link { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: 0 .75rem; border: 0; background: none; font-size: .92rem; font-weight: 500; border-radius: var(--radius); }
+.nav-link:hover { background: var(--surface-2); }
+.nav-link[aria-current="page"] { text-decoration: underline; text-underline-offset: 8px; text-decoration-thickness: 2px; }
+.subnav { border-top: 1px solid var(--line); }
+.subnav .wrap { display: flex; gap: 1.5rem; overflow-x: auto; scrollbar-width: none; }
+.subnav a { display: inline-flex; align-items: center; min-height: 44px; font-size: .88rem; color: var(--muted); white-space: nowrap; border-bottom: 2px solid transparent; }
+.subnav a:hover { color: var(--text); border-bottom-color: var(--text); }
+.subnav a.sale { margin-left: auto; }
+.tabbar { display: none; }
+
+/* ---------- Sections ---------- */
+.section { margin-top: 3.5rem; border-top: 1px solid var(--text); padding-top: 1rem; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.section-head h2 { font-size: 1.25rem; }
+.section-head p { color: var(--muted); font-size: .92rem; }
+
+/* ---------- Accueil ---------- */
+.hero .hero-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4rem; align-items: center; padding-block: 4.5rem 3rem; }
+.hero h1 { font-size: clamp(2.2rem, 4.2vw, 3.4rem); font-weight: 600; letter-spacing: -.03em; line-height: 1.08; margin: .9rem 0 1.1rem; }
+.hero .lead { color: var(--muted); font-size: 1.08rem; max-width: 30rem; }
+.hero-cta { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 2rem; }
+.hero .tile { aspect-ratio: 5 / 4; border-radius: var(--radius); }
+.hero .tile .glyph { width: 28%; height: 28%; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.facts li { padding: 1.25rem 1.5rem 1.25rem 0; }
+.facts li + li { padding-left: 1.5rem; border-left: 1px solid var(--line); }
+.facts strong { display: block; font-weight: 600; font-size: .95rem; }
+.facts span { color: var(--muted); font-size: .9rem; }
+.rows { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 3rem; }
+.rows a { display: flex; align-items: center; justify-content: space-between; min-height: 52px; border-bottom: 1px solid var(--line); font-weight: 500; transition: padding .2s ease; }
+.rows a span { color: var(--muted); font-weight: 400; font-size: .88rem; }
+.rows a:hover { padding-left: .35rem; border-bottom-color: var(--text); }
+.offers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.offer { border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 1.5rem; display: grid; gap: 1rem; align-content: space-between; min-height: 170px; }
+.offer h3 { font-size: 1.15rem; }
+.offer p { color: var(--muted); font-size: .92rem; margin-top: .35rem; }
+.code { display: inline-flex; align-items: center; gap: .75rem; justify-self: start; min-height: 44px; padding: 0 .5rem 0 .9rem; border: 1px dashed var(--line-strong); border-radius: var(--radius); background: var(--surface-2); font-family: var(--mono); font-size: .92rem; font-weight: 500; }
+.code button { min-height: 36px; padding: 0 .7rem; border: 0; background: none; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; font-family: var(--font); font-size: .85rem; font-weight: 500; }
+
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem 1.25rem; }
+.card { position: relative; display: flex; flex-direction: column; gap: .75rem; }
+.card .tile { aspect-ratio: 1; border-radius: var(--radius); }
+.card .flag { position: absolute; top: .6rem; left: .6rem; background: #fff; border: 1px solid var(--line); border-radius: 3px; padding: .1rem .45rem; font-size: .78rem; font-weight: 500; color: var(--sale); }
+.card-body { display: grid; gap: .15rem; }
+.card-foot { margin-top: auto; }
+.card-title { font-size: .98rem; font-weight: 500; line-height: 1.3; }
+.card-title a::after { content: ""; position: absolute; inset: 0; }
+.card:hover .card-title a { text-decoration: underline; text-underline-offset: 3px; }
+.card-foot { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; }
+.price { font-weight: 600; font-size: 1.05rem; display: flex; flex-direction: column; line-height: 1.25; white-space: nowrap; }
+.price s { font-weight: 400; font-size: .82rem; color: var(--muted); }
+.card .btn { position: relative; z-index: 2; }
+.cmp { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; margin-top: -.5rem; font-size: .85rem; color: var(--muted); cursor: pointer; width: fit-content; }
+.cmp input { width: 18px; height: 18px; accent-color: var(--text); cursor: pointer; }
+.cmp:hover { color: var(--text); }
+.recent { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem 1rem; }
+.recent a { display: grid; gap: .5rem; }
+.recent .tile { aspect-ratio: 1; border-radius: var(--radius); }
+.recent .tile .glyph { width: 40%; height: 40%; }
+.recent b { font-weight: 500; font-size: .86rem; line-height: 1.3; }
+.recent a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+.recent span.p { font-size: .86rem; color: var(--muted); }
+
+.footer { margin-top: 4rem; border-top: 1px solid var(--line); }
+.footer .wrap { display: flex; flex-wrap: wrap; gap: .5rem 2rem; justify-content: space-between; align-items: center; padding-block: 1.25rem; color: var(--muted); font-size: .85rem; }
+.footer nav { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.footer nav a { min-height: 44px; display: inline-flex; align-items: center; }
+.footer a:hover { color: var(--text); text-decoration: underline; }
+
+/* ---------- Catalogue ---------- */
+.crumbs { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem; font-size: .85rem; color: var(--muted); padding-block: 1rem .5rem; }
+.crumbs a { min-height: 32px; display: inline-flex; align-items: center; }
+.crumbs a:hover { color: var(--text); text-decoration: underline; }
+.crumbs [aria-current] { color: var(--text); }
+.page-title { display: flex; align-items: end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: 1.25rem; }
+.page-title h1 { font-size: 1.9rem; letter-spacing: -.02em; }
+.page-title p { color: var(--muted); font-size: .92rem; margin-top: .2rem; }
+.toolbar { display: flex; gap: .5rem; align-items: center; }
+.select { position: relative; }
+.select select { appearance: none; min-height: 44px; padding: 0 2.4rem 0 .9rem; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; font-size: .9rem; }
+.select select:hover { border-color: var(--text); }
+.select svg { position: absolute; right: .8rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
+.tabs { display: flex; gap: 1.5rem; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--line); }
+.tabs button { min-height: 44px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); font-size: .92rem; white-space: nowrap; padding: 0; margin-bottom: -1px; border-radius: 0; }
+.tabs button:hover { color: var(--text); }
+.tabs button[aria-pressed="true"] { color: var(--text); border-bottom-color: var(--text); font-weight: 600; }
+.catalog { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 3rem; align-items: start; margin-top: 1.5rem; }
+.catalog .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.filters { position: sticky; top: 130px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-content: start; }
+.filters h2 { font-size: 1rem; display: flex; justify-content: space-between; align-items: center; }
+.filter-group { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; padding-top: 1.1rem; border-top: 1px solid var(--line); }
+.filter-group h3 { font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.opt { display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding: 0 .6rem; margin-inline: -.6rem; border: 0; background: none; width: calc(100% + 1.2rem); text-align: left; border-radius: var(--radius); font-size: .92rem; }
+.opt:hover { background: var(--surface-2); }
+.opt[aria-pressed="true"] { font-weight: 600; background: var(--surface-2); box-shadow: inset 2px 0 0 var(--text); }
+.opt em { font-style: normal; color: var(--muted); font-size: .82rem; font-weight: 400; }
+.range { position: relative; height: 20px; margin-inline: 6px; }
+.range .track { position: absolute; inset: 9px 0 auto; height: 2px; background: var(--line-strong); }
+.range .fill { position: absolute; left: 8%; right: 38%; top: 9px; height: 2px; background: var(--text); }
+.range .thumb { position: absolute; top: 3px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: #fff; border: 2px solid var(--text); }
+.price-fields { display: flex; align-items: center; gap: .5rem; }
+.price-fields label { flex: 1; position: relative; }
+.price-fields input { width: 100%; min-height: 44px; padding: 0 1.6rem 0 .7rem; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
+.price-fields input:hover { border-color: var(--text); }
+.price-fields label span.u { position: absolute; right: .65rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .85rem; pointer-events: none; }
+.active-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.25rem; }
+.mobile-only { display: none; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: .25rem; margin-top: 3rem; }
+.pagination button { min-width: 44px; min-height: 44px; padding: 0 .5rem; border: 1px solid transparent; border-radius: var(--radius); background: none; }
+.pagination button:hover { border-color: var(--line-strong); }
+.pagination button[aria-current="page"] { border-color: var(--text); font-weight: 600; }
+.compare-bar { position: sticky; bottom: 0; z-index: 15; margin-top: 2rem; background: #fff; border-top: 1px solid var(--text); }
+.compare-bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .6rem; }
+.compare-bar p { font-size: .92rem; }
+.compare-bar .actions { display: flex; align-items: center; gap: .75rem; }
+.sheet-backdrop, .filters .sheet-close { display: none; }
+.sheet-close { width: 44px; height: 44px; place-items: center; border: 0; background: none; border-radius: var(--radius); }
+
+/* ---------- Fiche produit ---------- */
+.detail { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 4rem; align-items: start; padding-block: .5rem 0; }
+.gallery { display: grid; gap: .75rem; position: sticky; top: 130px; }
+.gallery .main { aspect-ratio: 1; border-radius: var(--radius); }
+.gallery .main .glyph { width: 30%; height: 30%; }
+.gallery ul { display: grid; grid-template-columns: repeat(5, 1fr); gap: .6rem; }
+.gallery button { padding: 0; border: 1px solid transparent; border-radius: var(--radius); background: none; width: 100%; aspect-ratio: 1; overflow: hidden; }
+.gallery button .tile { width: 100%; height: 100%; }
+.gallery button .glyph { width: 44%; height: 44%; }
+.gallery button[aria-pressed="true"] { border-color: var(--text); }
+.gallery button:hover { border-color: var(--line-strong); }
+.buy h1 { font-size: 2rem; letter-spacing: -.02em; margin: .35rem 0 .6rem; }
+.buy .price-row { display: flex; align-items: baseline; gap: .75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+.buy .price-big { font-size: 1.9rem; font-weight: 600; letter-spacing: -.02em; }
+.buy .price-row s { color: var(--muted); }
+.buy .desc { color: var(--muted); margin-top: 1rem; max-width: 34rem; }
+.stock { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.25rem; font-size: .92rem; font-weight: 500; color: var(--ok); }
+.stock::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.stock.low { color: var(--warn); }
+.buy-box { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; margin-top: 1.5rem; }
+.buy-row { display: flex; gap: .75rem; }
+.qty { display: inline-flex; align-items: center; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; flex: none; }
+.qty button { width: 44px; height: 50px; border: 0; background: none; display: grid; place-items: center; border-radius: var(--radius); }
+.qty button:hover { background: var(--surface-2); }
+.qty output { min-width: 32px; text-align: center; font-weight: 500; }
+.buy-row .btn { flex: 1; }
+.specs { margin: 2rem 0 0; border-top: 1px solid var(--text); }
+.specs div { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 1rem; padding: .75rem 0; border-bottom: 1px solid var(--line); font-size: .92rem; }
+.specs dt { color: var(--muted); }
+.specs dd { margin: 0; }
+.mobile-buybar { display: none; }
+
+/* ---------- Panier ---------- */
+.steps { display: flex; gap: .5rem 1.25rem; flex-wrap: wrap; font-size: .9rem; color: var(--muted); padding-bottom: 1.25rem; }
+.steps li::before { content: attr(data-n) "  "; color: var(--muted); }
+.steps li[aria-current] { color: var(--text); font-weight: 600; }
+.steps li[aria-current]::before { color: var(--text); }
+.cart-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 3.5rem; align-items: start; margin-top: 1rem; }
+.ship { padding-bottom: 1rem; font-size: .92rem; display: grid; gap: .5rem; }
+.ship .bar { height: 3px; background: var(--line); }
+.ship .bar i { display: block; height: 100%; width: 100%; background: var(--ok); }
+.ship p { color: var(--ok); font-weight: 500; }
+.lines { border-top: 1px solid var(--text); }
+.line { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 1.25rem; align-items: center; padding: 1.1rem 0; border-bottom: 1px solid var(--line); }
+.line .tile { width: 84px; height: 84px; border-radius: var(--radius); }
+.line .tile .glyph { width: 44%; height: 44%; }
+.line h3 { font-size: 1rem; font-weight: 500; }
+.line .sub { color: var(--muted); font-size: .88rem; margin-top: .1rem; }
+.line .note { font-size: .82rem; color: var(--ok); margin-top: .3rem; }
+.line-side { display: grid; gap: .5rem; justify-items: end; }
+.line-total { font-weight: 600; }
+.line-ctrls { display: flex; align-items: center; gap: .75rem; }
+.line .qty button { width: 40px; height: 40px; }
+.line .link { color: var(--muted); font-size: .85rem; }
+.line .link:hover { color: var(--danger); }
+.summary { position: sticky; top: 130px; background: var(--surface-2); border-radius: var(--radius); padding: 1.5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.1rem; }
+.summary h2 { font-size: 1.1rem; }
+.promo-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: .4rem; }
+.promo-form label { font-size: .88rem; font-weight: 500; }
+.promo-form .row { display: flex; gap: .5rem; }
+.promo-form input { flex: 1; min-width: 0; min-height: 44px; padding: 0 .8rem; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; text-transform: uppercase; font-family: var(--mono); }
+.promo-form input:hover { border-color: var(--text); }
+.promo-form .ok { font-size: .85rem; color: var(--ok); }
+.totals { display: grid; gap: .55rem; margin: 0; }
+.totals div { display: flex; justify-content: space-between; gap: 1rem; font-size: .92rem; }
+.totals dt { color: var(--muted); }
+.totals dd { margin: 0; }
+.totals .disc dd, .totals .disc dt { color: var(--ok); }
+.totals .grand { padding-top: .8rem; margin-top: .3rem; border-top: 1px solid var(--text); }
+.totals .grand dt { color: var(--text); font-weight: 600; }
+.totals .grand dd { font-size: 1.35rem; font-weight: 600; }
+.hint { font-size: .85rem; color: var(--muted); }
+.center { text-align: center; }
+
+/* ---------- Connexion ---------- */
+.login { display: grid; place-items: start center; padding: 4.5rem 1.5rem 2rem; }
+.login-card { width: 100%; max-width: 400px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+.login-card h1 { font-size: 1.9rem; letter-spacing: -.02em; }
+.login-card .sub { color: var(--muted); margin-top: .3rem; }
+.demo { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .75rem 1rem; border-left: 3px solid var(--accent); background: var(--surface-2); font-size: .88rem; }
+.demo code { font-family: var(--mono); font-size: .85rem; }
+.form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.1rem; }
+.field { display: grid; grid-template-columns: minmax(0, 1fr); gap: .35rem; }
+.field label { font-size: .9rem; font-weight: 500; }
+.field .ctl { position: relative; }
+.field input { width: 100%; min-height: 48px; padding: 0 .9rem; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
+.field input:hover { border-color: var(--text); }
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.field .toggle { position: absolute; right: 2px; top: 2px; min-height: 44px; padding: 0 .75rem; border: 0; background: none; color: var(--accent); font-size: .85rem; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
+.field .help { font-size: .82rem; color: var(--muted); }
+.field.error input { border-color: var(--danger); }
+.field .err { display: none; font-size: .85rem; color: var(--danger); font-weight: 500; }
+.field.error .err { display: block; }
+details.adv { border-top: 1px solid var(--line); padding-top: .5rem; }
+details.adv summary { cursor: pointer; font-size: .9rem; color: var(--muted); min-height: 44px; display: flex; align-items: center; }
+details.adv[open] summary { margin-bottom: .5rem; }
+.form-foot { font-size: .9rem; color: var(--muted); }
+.form-foot a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 12px); opacity: 0; pointer-events: none; z-index: 100; background: var(--text); color: #fff; padding: .7rem 1.1rem; border-radius: var(--radius); font-size: .9rem; transition: opacity .2s ease, transform .2s ease; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- Tablette ---------- */
+@container (max-width: 960px) {
+  .header .wrap { gap: 1rem; }
+  .hero .hero-main { grid-template-columns: 1fr; gap: 2rem; padding-block: 2.5rem 2rem; }
+  .rows { grid-template-columns: repeat(2, 1fr); }
+  .grid, .catalog .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .recent { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .catalog { grid-template-columns: 1fr; }
+  .detail { gap: 2rem; }
+  .cart-layout { grid-template-columns: 1fr; gap: 2rem; }
+  .summary, .gallery, .filters { position: static; }
+}
+
+/* ---------- Mobile ---------- */
+@container (max-width: 640px) {
+  .wrap { padding-inline: 1rem; }
+  .header .wrap { grid-template-columns: 1fr auto; gap: 0 1rem; min-height: 0; padding-block: .25rem .75rem; }
+  .header .logo { grid-row: 1; }
+  .header .search { grid-column: 1 / -1; grid-row: 2; max-width: none; }
+  .header-actions .nav-link.hide-m { display: none; }
+  .subnav, .announce { display: none; }
+  .hero .hero-main { padding-block: 2rem 1.5rem; }
+  .hero h1 { font-size: 2rem; }
+  .hero .tile { aspect-ratio: 16 / 10; }
+  .hero-cta { margin-top: 1.5rem; }
+  .facts { grid-template-columns: 1fr; }
+  .facts li, .facts li + li { padding: .9rem 0; border-left: 0; border-bottom: 1px solid var(--line); }
+  .section { margin-top: 2.5rem; }
+  .rows, .offers { grid-template-columns: 1fr; }
+  .rows { column-gap: 0; }
+  .grid, .catalog .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem .75rem; }
+  .card-title { font-size: .9rem; }
+  .card-foot { flex-direction: column; align-items: stretch; gap: .5rem; }
+  .card .btn { width: 100%; }
+  .recent { display: flex; overflow-x: auto; margin-inline: -1rem; padding-inline: 1rem; scrollbar-width: none; }
+  .recent a { flex: none; width: 124px; }
+  .page-title h1 { font-size: 1.5rem; }
+  .desktop-only { display: none !important; }
+  .mobile-only { display: inline-flex; }
+  .toolbar { width: 100%; }
+  .toolbar .select { flex: 1; }
+  .toolbar .select select { width: 100%; }
+  .filters { display: none; position: fixed; z-index: 40; left: 0; right: 0; top: calc(var(--sy, 0px) + var(--vh, 100%) * .12); height: calc(var(--vh, 100%) * .88); overflow-y: auto; background: #fff; border-top: 1px solid var(--text); padding: 1rem 1rem 1.5rem; }
+  .filters.open { display: grid; animation: sheet-up .25s ease; }
+  .sheet-backdrop { position: fixed; z-index: 35; left: 0; right: 0; top: var(--sy, 0px); height: var(--vh, 100%); background: rgba(22, 22, 22, .45); }
+  .sheet-backdrop.open { display: block; }
+  .filters .sheet-close { display: grid; }
+  .sheet-apply { position: sticky; bottom: 0; }
+  .compare-bar { bottom: 66px; }
+  .compare-bar p { font-size: .82rem; }
+  .detail { grid-template-columns: 1fr; gap: 1.25rem; }
+  .buy h1 { font-size: 1.6rem; }
+  .buy-box { display: none; }
+  .specs div { grid-template-columns: 6.5rem minmax(0, 1fr); }
+  .mobile-buybar { display: flex; gap: .5rem; position: sticky; bottom: 66px; z-index: 15; padding: .6rem 1rem; margin: 1.5rem -1rem 0; background: #fff; border-top: 1px solid var(--text); }
+  .mobile-buybar .btn:last-child { flex: 1; }
+  .line { grid-template-columns: 72px minmax(0, 1fr); gap: 1rem; }
+  .line .tile { width: 72px; height: 72px; }
+  .line-side { grid-column: 1 / -1; grid-template-columns: 1fr auto; align-items: center; justify-items: stretch; }
+  .line-side .line-total { text-align: right; order: 2; }
+  .login { padding: 2rem 1rem 1rem; }
+  .login-card h1 { font-size: 1.6rem; }
+  .demo { flex-direction: column; align-items: stretch; }
+  .tabbar { display: grid; grid-template-columns: repeat(5, 1fr); position: sticky; bottom: 0; z-index: 30; background: #fff; border-top: 1px solid var(--line); }
+  .tabbar button { position: relative; display: grid; justify-items: center; align-content: center; gap: 2px; min-height: 58px; padding: .3rem 0; border: 0; border-top: 2px solid transparent; margin-top: -1px; background: none; font-size: .7rem; color: var(--muted); border-radius: 0; }
+  .tabbar button[aria-current="page"] { color: var(--text); font-weight: 600; border-top-color: var(--text); }
+  .tabbar .count { position: absolute; top: 4px; left: calc(50% + 6px); min-width: 17px; height: 17px; border-radius: 9px; background: var(--text); color: #fff; font-size: .66rem; display: grid; place-items: center; padding: 0 4px; }
+  .footer { margin-top: 2.5rem; }
+  .footer .wrap { justify-content: center; text-align: center; }
+  .toast { bottom: 88px; }
+}
+
+@keyframes sheet-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-compare" viewBox="0 0 24 24"><path d="M8 3 4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+    <symbol id="g-beauty" viewBox="0 0 48 48"><path d="M18 4h12v8H18zM15 12h18l2 8v22a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V20z"/><path d="M13 26h22"/></symbol>
+    <symbol id="g-fragrance" viewBox="0 0 48 48"><path d="M19 5h10v6H19zM21 11v4M27 11v4"/><rect x="11" y="15" width="26" height="28" rx="6"/><circle cx="24" cy="29" r="5"/></symbol>
+    <symbol id="g-furniture" viewBox="0 0 48 48"><path d="M9 21v-5a6 6 0 0 1 6-6h18a6 6 0 0 1 6 6v5"/><path d="M5 27a4 4 0 0 1 8 0v3h22v-3a4 4 0 0 1 8 0v10H5z"/><path d="M10 37v5M38 37v5"/></symbol>
+    <symbol id="g-laptops" viewBox="0 0 48 48"><rect x="8" y="9" width="32" height="24" rx="3"/><path d="M3 39h42"/></symbol>
+    <symbol id="g-fashion" viewBox="0 0 48 48"><path d="m17 6-12 7 4 9 6-2v22h18V20l6 2 4-9-12-7a7 7 0 0 1-14 0z"/></symbol>
+    <symbol id="g-audio" viewBox="0 0 48 48"><path d="M8 28v-4a16 16 0 0 1 32 0v4"/><rect x="6" y="28" width="9" height="14" rx="3"/><rect x="33" y="28" width="9" height="14" rx="3"/></symbol>
+  </defs>
+</svg>
+
+<div class="stage-bar">
+  <h1>ChampaShop <small>Maquettes, version sobre</small></h1>
+  <div class="stage-tabs" role="tablist" aria-label="Écrans">
+    <button role="tab" data-go="home" aria-selected="true">Accueil</button>
+    <button role="tab" data-go="catalog" aria-selected="false">Catalogue</button>
+    <button role="tab" data-go="product" aria-selected="false">Fiche produit</button>
+    <button role="tab" data-go="cart" aria-selected="false">Panier</button>
+    <button role="tab" data-go="login" aria-selected="false">Connexion</button>
+  </div>
+  <div class="stage-device" role="group" aria-label="Appareil">
+    <button id="dev-desktop" aria-pressed="true">Bureau</button>
+    <button id="dev-mobile" aria-pressed="false">Mobile</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="device" id="device">
+    <div class="viewport" id="viewport">
+
+      <p class="announce">Livraison offerte dès 80 € d’achat</p>
+
+      <header class="header">
+        <div class="wrap">
+          <a href="#" class="logo" data-go="home" aria-label="ChampaShop, accueil">ChampaShop</a>
+          <form class="search" role="search" onsubmit="event.preventDefault(); go('catalog')">
+            <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+            <label class="sr-only" for="q-global">Rechercher un produit</label>
+            <input id="q-global" type="search" placeholder="Rechercher un produit">
+          </form>
+          <div class="header-actions">
+            <button class="nav-link hide-m" data-go="login" data-nav="login">Connexion</button>
+            <button class="nav-link" data-go="cart" data-nav="cart" aria-label="Panier, 5 articles">Panier (5)</button>
+          </div>
+        </div>
+        <nav class="subnav" aria-label="Catégories">
+          <div class="wrap">
+            <a href="#" data-go="catalog">Beauté</a><a href="#" data-go="catalog">Parfums</a><a href="#" data-go="catalog">Meubles</a>
+            <a href="#" data-go="catalog">Ordinateurs</a><a href="#" data-go="catalog">Mode</a><a href="#" data-go="catalog">Audio</a>
+            <a href="#" data-go="catalog" class="sale">Promotions</a>
+          </div>
+        </nav>
+      </header>
+
+      <!-- ============ ACCUEIL ============ -->
+      <main class="screen" id="s-home">
+        <section class="hero">
+          <div class="wrap hero-main">
+            <div>
+              <p class="label-s">Catalogue en ligne</p>
+              <h1>194 produits, des prix clairs.</h1>
+              <p class="lead">Filtrez par catégorie et par prix, comparez jusqu’à trois produits, et retrouvez le détail de vos remises dans le panier.</p>
+              <div class="hero-cta">
+                <button class="btn lg" data-go="catalog">Voir le catalogue</button>
+                <button class="link" data-go="catalog">Voir les promotions <svg class="i sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+              </div>
+            </div>
+            <div class="tile" role="img" aria-label="Emplacement de la photo mise en avant"><svg class="glyph"><use href="#g-furniture"/></svg></div>
+          </div>
+          <div class="wrap">
+            <ul class="facts">
+              <li><strong>Livraison offerte</strong><span>dès 80 € d’achat</span></li>
+              <li><strong>Remise beauté</strong><span>−10 % dès 3 articles, automatique</span></li>
+              <li><strong>Prix toutes taxes comprises</strong><span>sans frais ajoutés au paiement</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="wrap">
+          <section class="section" aria-labelledby="h-cats">
+            <div class="section-head"><h2 id="h-cats">Catégories</h2><a class="link" href="#" data-go="catalog">Tout le catalogue</a></div>
+            <div class="rows">
+              <a href="#" data-go="catalog">Beauté <span>35</span></a>
+              <a href="#" data-go="catalog">Parfums <span>27</span></a>
+              <a href="#" data-go="catalog">Meubles <span>30</span></a>
+              <a href="#" data-go="catalog">Ordinateurs <span>6</span></a>
+              <a href="#" data-go="catalog">Mode <span>42</span></a>
+              <a href="#" data-go="catalog">Audio <span>14</span></a>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="h-offers">
+            <div class="section-head"><h2 id="h-offers">Promotions</h2></div>
+            <div class="offers">
+              <article class="offer">
+                <div><h3>−10 % sur la beauté dès 3 articles</h3><p>Appliqué automatiquement dans le panier, ligne par ligne.</p></div>
+                <button class="link" data-go="catalog">Voir la beauté <svg class="i sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+              </article>
+              <article class="offer">
+                <div><h3>−10 € dès 50 € d’achat</h3><p>Sur le sous-total après remise beauté.</p></div>
+                <span class="code">TROYES10 <button type="button" data-copy="TROYES10" aria-label="Copier le code TROYES10">Copier</button></span>
+              </article>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="h-pop">
+            <div class="section-head"><h2 id="h-pop">Les mieux notés</h2><a class="link" href="#" data-go="catalog">Tout voir</a></div>
+            <div class="grid" id="grid-home"></div>
+          </section>
+
+          <section class="section" aria-labelledby="h-recent">
+            <div class="section-head"><h2 id="h-recent">Vus récemment</h2><button class="link" type="button">Effacer l’historique</button></div>
+            <div class="recent" id="recent-home"></div>
+          </section>
+        </div>
+      </main>
+
+      <!-- ============ CATALOGUE ============ -->
+      <main class="screen" id="s-catalog" hidden>
+        <div class="wrap">
+          <nav class="crumbs" aria-label="Fil d’Ariane"><a href="#" data-go="home">Accueil</a><span aria-hidden="true">/</span><span aria-current="page">Catalogue</span></nav>
+          <div class="page-title">
+            <div><h1>Catalogue</h1><p aria-live="polite">35 produits · Beauté</p></div>
+            <div class="toolbar">
+              <button class="btn ghost mobile-only" type="button" id="open-filters" aria-controls="filters" aria-expanded="false"><svg class="i" aria-hidden="true"><use href="#i-sliders"/></svg>Filtres (2)</button>
+              <div class="select">
+                <label class="sr-only" for="sort">Trier par</label>
+                <select id="sort"><option>Pertinence</option><option>Prix croissant</option><option>Prix décroissant</option><option>Mieux notés</option><option>Plus grosse remise</option></select>
+                <svg class="i sm" aria-hidden="true"><use href="#i-chev-d"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="tabs" role="group" aria-label="Catégories">
+            <button aria-pressed="false">Toutes</button><button aria-pressed="true">Beauté</button><button aria-pressed="false">Parfums</button>
+            <button aria-pressed="false">Meubles</button><button aria-pressed="false">Ordinateurs</button><button aria-pressed="false">Mode</button><button aria-pressed="false">Audio</button>
+          </div>
+
+          <div class="catalog">
+            <div class="sheet-backdrop" id="sheet-backdrop"></div>
+            <aside class="filters" id="filters" aria-label="Filtres du catalogue">
+              <h2>Filtres <button class="sheet-close" type="button" id="close-filters" aria-label="Fermer les filtres"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button></h2>
+              <div class="filter-group">
+                <h3>Prix</h3>
+                <div class="range" aria-hidden="true"><span class="track"></span><span class="fill"></span><span class="thumb" style="left:8%"></span><span class="thumb" style="left:62%"></span></div>
+                <div class="price-fields">
+                  <label><span class="sr-only">Prix minimum</span><input type="number" value="10" aria-label="Prix minimum en euros"><span class="u">€</span></label>
+                  <span aria-hidden="true">–</span>
+                  <label><span class="sr-only">Prix maximum</span><input type="number" value="80" aria-label="Prix maximum en euros"><span class="u">€</span></label>
+                </div>
+              </div>
+              <div class="filter-group">
+                <h3>Catégorie</h3>
+                <div>
+                  <button class="opt" aria-pressed="false">Toutes <em>194</em></button>
+                  <button class="opt" aria-pressed="true">Beauté <em>35</em></button>
+                  <button class="opt" aria-pressed="false">Parfums <em>27</em></button>
+                  <button class="opt" aria-pressed="false">Meubles <em>30</em></button>
+                  <button class="opt" aria-pressed="false">Ordinateurs <em>6</em></button>
+                </div>
+                <button class="link" style="justify-self:start">12 autres catégories</button>
+              </div>
+              <button class="btn block sheet-apply mobile-only" type="button" id="apply-filters">Voir les 35 produits</button>
+            </aside>
+
+            <div>
+              <div class="active-row" aria-label="Filtres actifs">
+                <span class="tag">Beauté <button aria-label="Retirer le filtre Beauté"><svg class="i sm" aria-hidden="true"><use href="#i-x"/></svg></button></span>
+                <span class="tag">10 € – 80 € <button aria-label="Retirer le filtre de prix"><svg class="i sm" aria-hidden="true"><use href="#i-x"/></svg></button></span>
+                <button class="link">Tout effacer</button>
+              </div>
+              <div class="grid" id="grid-catalog"></div>
+              <nav class="pagination" aria-label="Pagination">
+                <button aria-label="Page précédente"><svg class="i" aria-hidden="true"><use href="#i-chev-l"/></svg></button>
+                <button aria-current="page">1</button><button>2</button><button>3</button>
+                <button aria-label="Page suivante"><svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="compare-bar" role="region" aria-label="Comparateur">
+          <div class="wrap">
+            <p><b>2</b> sur 3 produits à comparer</p>
+            <div class="actions"><button class="link" type="button">Vider</button><button class="btn sm" type="button">Comparer</button></div>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============ FICHE PRODUIT ============ -->
+      <main class="screen" id="s-product" hidden>
+        <div class="wrap">
+          <nav class="crumbs" aria-label="Fil d’Ariane"><a href="#" data-go="home">Accueil</a><span aria-hidden="true">/</span><a href="#" data-go="catalog">Catalogue</a><span aria-hidden="true">/</span><span aria-current="page">Mascara Lash Princess</span></nav>
+          <article class="detail">
+            <div class="gallery">
+              <div class="tile main" role="img" aria-label="Image 1 sur 5 : Mascara Lash Princess"><svg class="glyph"><use href="#g-beauty"/></svg></div>
+              <ul aria-label="Images du produit">
+                <li><button aria-pressed="true" aria-label="Image 1"><span class="tile"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+                <li><button aria-pressed="false" aria-label="Image 2"><span class="tile"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+                <li><button aria-pressed="false" aria-label="Image 3"><span class="tile"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+                <li><button aria-pressed="false" aria-label="Image 4"><span class="tile"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+                <li><button aria-pressed="false" aria-label="Image 5"><span class="tile"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+              </ul>
+            </div>
+
+            <div class="buy">
+              <p class="label-s">Beauté · Essence</p>
+              <h1>Mascara Lash Princess</h1>
+              <p class="rating"><b>4,3</b> sur 5</p>
+              <div class="price-row"><span class="price-big">9,99 €</span><s>11,10 €</s><span class="sale">−10 %</span></div>
+              <p class="desc">Un mascara populaire pour des cils plus longs et plus volumineux. Formule longue tenue, non testée sur les animaux.</p>
+              <p class="stock low" aria-live="polite">Plus que 4 en stock</p>
+
+              <div class="buy-box">
+                <div class="buy-row">
+                  <div class="qty" role="group" aria-label="Quantité">
+                    <button type="button" aria-label="Diminuer la quantité" data-qty="-1"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button>
+                    <output id="qty-val">1</output>
+                    <button type="button" aria-label="Augmenter la quantité" data-qty="1"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button>
+                  </div>
+                  <button class="btn lg" type="button" data-addcart>Ajouter au panier</button>
+                </div>
+                <button class="btn ghost block" type="button" data-compare-toggle aria-pressed="false">Ajouter au comparateur</button>
+              </div>
+
+              <dl class="specs">
+                <div><dt>Marque</dt><dd>Essence</dd></div>
+                <div><dt>Catégorie</dt><dd>Beauté</dd></div>
+                <div><dt>Garantie</dt><dd>1 semaine</dd></div>
+                <div><dt>Livraison</dt><dd>Expédié sous 1 mois</dd></div>
+                <div><dt>Retours</dt><dd>Retour sous 30 jours</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <section class="section" aria-labelledby="h-rec2">
+            <div class="section-head"><h2 id="h-rec2">Dans la même sélection</h2></div>
+            <div class="grid" id="grid-product"></div>
+          </section>
+
+          <div class="mobile-buybar">
+            <button class="btn ghost" style="padding:0;width:48px" aria-label="Ajouter au comparateur"><svg class="i" aria-hidden="true"><use href="#i-compare"/></svg></button>
+            <button class="btn lg" type="button" data-addcart>Ajouter au panier · 9,99 €</button>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============ PANIER ============ -->
+      <main class="screen" id="s-cart" hidden>
+        <div class="wrap">
+          <nav class="crumbs" aria-label="Fil d’Ariane"><a href="#" data-go="catalog">← Continuer mes achats</a></nav>
+          <div class="page-title"><div><h1>Panier</h1><p>5 articles</p></div></div>
+          <ol class="steps" aria-label="Étapes de commande">
+            <li data-n="1" aria-current="step">Panier</li><li data-n="2">Connexion</li><li data-n="3">Confirmation</li>
+          </ol>
+
+          <div class="cart-layout">
+            <div>
+              <div class="ship">
+                <p>Livraison offerte : votre panier dépasse 80 €.</p>
+                <div class="bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Progression vers la livraison offerte"><i></i></div>
+              </div>
+              <ul class="lines">
+                <li class="line">
+                  <span class="tile"><svg class="glyph"><use href="#g-beauty"/></svg></span>
+                  <div><h3>Mascara Lash Princess</h3><p class="sub">Beauté · 9,99 € l’unité</p><p class="note">Remise beauté −10 % appliquée</p></div>
+                  <div class="line-side">
+                    <p class="line-total">29,97 €</p>
+                    <div class="line-ctrls">
+                      <div class="qty" role="group" aria-label="Quantité Mascara"><button aria-label="Diminuer"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button><output>3</output><button aria-label="Augmenter"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button></div>
+                      <button class="link" aria-label="Retirer Mascara Lash Princess du panier">Retirer</button>
+                    </div>
+                  </div>
+                </li>
+                <li class="line">
+                  <span class="tile"><svg class="glyph"><use href="#g-beauty"/></svg></span>
+                  <div><h3>Palette de fards à paupières</h3><p class="sub">Beauté · 19,99 € l’unité</p><p class="note">Remise beauté −10 % appliquée</p></div>
+                  <div class="line-side">
+                    <p class="line-total">19,99 €</p>
+                    <div class="line-ctrls">
+                      <div class="qty" role="group" aria-label="Quantité Palette"><button aria-label="Diminuer"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button><output>1</output><button aria-label="Augmenter"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button></div>
+                      <button class="link" aria-label="Retirer la palette du panier">Retirer</button>
+                    </div>
+                  </div>
+                </li>
+                <li class="line">
+                  <span class="tile"><svg class="glyph"><use href="#g-fragrance"/></svg></span>
+                  <div><h3>Gucci Bloom Eau de Parfum</h3><p class="sub">Parfums · 79,99 € l’unité</p></div>
+                  <div class="line-side">
+                    <p class="line-total">79,99 €</p>
+                    <div class="line-ctrls">
+                      <div class="qty" role="group" aria-label="Quantité Gucci Bloom"><button aria-label="Diminuer"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button><output>1</output><button aria-label="Augmenter"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button></div>
+                      <button class="link" aria-label="Retirer Gucci Bloom du panier">Retirer</button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <aside class="summary" aria-label="Résumé de la commande">
+              <h2>Résumé</h2>
+              <form class="promo-form" onsubmit="event.preventDefault(); toast('Code TROYES10 appliqué')">
+                <label for="promo">Code promo</label>
+                <div class="row"><input id="promo" type="text" value="TROYES10" autocomplete="off"><button class="btn ghost sm" type="submit">Appliquer</button></div>
+                <p class="ok">Code TROYES10 appliqué</p>
+              </form>
+              <dl class="totals">
+                <div><dt>Sous-total</dt><dd>129,95 €</dd></div>
+                <div class="disc"><dt>Remise beauté (−10 %)</dt><dd>−5,00 €</dd></div>
+                <div class="disc"><dt>Code TROYES10</dt><dd>−10,00 €</dd></div>
+                <div><dt>Livraison</dt><dd>Offerte</dd></div>
+                <div class="grand"><dt>Total</dt><dd>114,95 €</dd></div>
+              </dl>
+              <button class="btn lg block" type="button" data-go="login">Se connecter pour commander</button>
+              <p class="hint center">Connexion requise pour valider. Votre panier est conservé.</p>
+              <button class="link" type="button" style="justify-self:center;color:var(--muted)">Vider le panier</button>
+            </aside>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============ CONNEXION ============ -->
+      <main class="screen" id="s-login" hidden>
+        <div class="login">
+          <section class="login-card">
+            <div><h1>Connexion</h1><p class="sub">Identifiez-vous pour valider votre commande.</p></div>
+            <div class="demo">
+              <span>Compte de démonstration<br><code>emilys / emilyspass</code></span>
+              <button class="btn ghost sm" type="button" id="fill-demo">Remplir</button>
+            </div>
+            <form class="form" novalidate onsubmit="event.preventDefault(); validateLogin()">
+              <div class="field" id="f-user">
+                <label for="username">Identifiant</label>
+                <div class="ctl"><input id="username" name="username" type="text" autocomplete="username" required aria-describedby="e-user"></div>
+                <p class="err" id="e-user" role="alert">Saisissez votre identifiant.</p>
+              </div>
+              <div class="field" id="f-pass">
+                <label for="password">Mot de passe</label>
+                <div class="ctl">
+                  <input id="password" name="password" type="password" autocomplete="current-password" required aria-describedby="e-pass" style="padding-right:6rem">
+                  <button class="toggle" type="button" id="toggle-pass" aria-pressed="false">Afficher</button>
+                </div>
+                <p class="err" id="e-pass" role="alert">Saisissez votre mot de passe.</p>
+              </div>
+              <details class="adv">
+                <summary>Options avancées</summary>
+                <div class="field"><label for="exp">Expiration du token (minutes)</label><input id="exp" type="number" min="1" value="60"><span class="help">Durée de validité de la session.</span></div>
+              </details>
+              <button class="btn lg block" type="submit">Se connecter</button>
+            </form>
+            <p class="form-foot">Pas encore de compte ? <a href="#">Créer un compte</a></p>
+          </section>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <div class="wrap">
+          <span>© ChampaShop · Projet WR505</span>
+          <nav aria-label="Pied de page"><a href="#">Mentions légales</a><a href="#">Contact</a><a href="#">Livraison et retours</a></nav>
+        </div>
+      </footer>
+
+      <nav class="tabbar" aria-label="Navigation principale">
+        <button data-go="home" data-nav="home" aria-current="page"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg>Accueil</button>
+        <button data-go="catalog" data-nav="catalog"><svg class="i" aria-hidden="true"><use href="#i-grid"/></svg>Catalogue</button>
+        <button data-go="catalog"><svg class="i" aria-hidden="true"><use href="#i-compare"/></svg>Comparer<span class="count">2</span></button>
+        <button data-go="cart" data-nav="cart"><svg class="i" aria-hidden="true"><use href="#i-cart"/></svg>Panier<span class="count">5</span></button>
+        <button data-go="login" data-nav="login"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>Compte</button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<section class="notes" aria-labelledby="h-notes">
+  <h2 id="h-notes">Parti pris de cette version</h2>
+  <ul>
+    <li><b>Sobriété :</b> fond blanc, texte noir, une seule couleur d’accent (bleu nuit) réservée aux liens et au focus. Plus de dégradés, d’ombres, de pastilles colorées ni de cartes flottantes.</li>
+    <li><b>Structure :</b> filets fins pour séparer les blocs, titres de section alignés à gauche, rayons de 4 px, une seule famille de caractères (IBM Plex Sans).</li>
+    <li><b>Texte avant décoration :</b> les icônes en pastille sont remplacées par du texte (« Panier (5) », « Retirer », « Afficher »), les cartes d’arguments par une liste à filets.</li>
+    <li><b>Mêmes fonctions qu’avant :</b> recherche toujours visible, onglets de catégories, filtres latéraux (tiroir sur mobile), comparateur, barre d’achat collée sur mobile, panier détaillé, connexion avec compte de démo.</li>
+    <li><b>Accessibilité :</b> contrastes ≥ 4,5:1, cibles ≥ 44 px, focus visible, libellés visibles, mouvement réduit respecté.</li>
+    <li><b>Visuels :</b> les produits sont des vignettes grises neutres : en production, ce sont les photos de l’API.</li>
+  </ul>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const products = [
+  { cat: 'beauty', label: 'Beauté', title: 'Mascara Lash Princess', price: '9,99 €', old: '11,10 €', disc: '−10 %', rating: '4,3' },
+  { cat: 'beauty', label: 'Beauté', title: 'Palette de fards à paupières', price: '19,99 €', old: '', disc: '', rating: '3,3' },
+  { cat: 'fragrance', label: 'Parfums', title: 'Gucci Bloom Eau de Parfum', price: '79,99 €', old: '88,88 €', disc: '−10 %', rating: '4,7' },
+  { cat: 'laptops', label: 'Ordinateurs', title: 'MacBook Pro 14 pouces', price: '1 999 €', old: '', disc: '', rating: '4,6' },
+  { cat: 'furniture', label: 'Meubles', title: 'Lit Annibale Colombo', price: '1 899 €', old: '2 110 €', disc: '−10 %', rating: '4,1' },
+  { cat: 'fashion', label: 'Mode', title: 'Chemise en lin à manches courtes', price: '24,99 €', old: '', disc: '', rating: '4,4' },
+  { cat: 'audio', label: 'Audio', title: 'Casque sans fil à réduction de bruit', price: '129 €', old: '149 €', disc: '−13 %', rating: '4,8' },
+  { cat: 'beauty', label: 'Beauté', title: 'Rouge à lèvres rouge intense', price: '12,99 €', old: '', disc: '', rating: '4,0' }
+];
+const tile = (p) => `<span class="tile" aria-hidden="true"><svg class="glyph"><use href="#g-${p.cat}"/></svg></span>`;
+const card = (p) => `
+  <article class="card">
+    ${tile(p)}${p.disc ? `<span class="flag">${p.disc}</span>` : ''}
+    <div class="card-body">
+      <p class="label-s">${p.label}</p>
+      <h3 class="card-title"><a href="#" data-go="product">${p.title}</a></h3>
+      <p class="rating"><b>${p.rating}</b> sur 5</p>
+    </div>
+    <div class="card-foot">
+      <span class="price">${p.price}${p.old ? `<s>${p.old}</s>` : ''}</span>
+      <button class="btn ghost sm" type="button" aria-label="Ajouter ${p.title} au panier" data-add>Ajouter</button>
+    </div>
+    <label class="cmp"><input type="checkbox"> Comparer</label>
+  </article>`;
+const recent = (p) => `<a href="#" data-go="product">${tile(p)}<b>${p.title}</b><span class="p">${p.price}</span></a>`;
+const fill = (id, list, fn) => { document.getElementById(id).innerHTML = list.map(fn).join(''); };
+fill('grid-home', products.slice(0, 4), card);
+fill('grid-catalog', [products[0], products[1], products[7], products[2], products[0], products[1]], card);
+fill('grid-product', products.slice(1, 5), card);
+fill('recent-home', [products[3], products[0], products[4], products[5], products[6], products[2]], recent);
+
+const screens = ['home', 'catalog', 'product', 'cart', 'login'];
+const viewport = document.getElementById('viewport');
+const filters = document.getElementById('filters');
+const backdrop = document.getElementById('sheet-backdrop');
+const openBtn = document.getElementById('open-filters');
+
+function closeSheet() {
+  filters.classList.remove('open'); backdrop.classList.remove('open'); openBtn.setAttribute('aria-expanded', 'false');
+  viewport.style.overflowY = '';
+}
+function go(name) {
+  screens.forEach((s) => { document.getElementById('s-' + s).hidden = s !== name; });
+  document.querySelectorAll('.stage-tabs [role=tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.go === name)));
+  document.querySelectorAll('[data-nav]').forEach((b) => { if (b.dataset.nav === name) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  closeSheet();
+  viewport.scrollTo({ top: 0, behavior: 'auto' });
+}
+document.addEventListener('click', (e) => { const t = e.target.closest('[data-go]'); if (t) { e.preventDefault(); go(t.dataset.go); } });
+
+const device = document.getElementById('device');
+function setDevice(mobile) {
+  device.classList.toggle('mobile', mobile);
+  document.getElementById('dev-mobile').setAttribute('aria-pressed', String(mobile));
+  document.getElementById('dev-desktop').setAttribute('aria-pressed', String(!mobile));
+}
+document.getElementById('dev-desktop').onclick = () => setDevice(false);
+document.getElementById('dev-mobile').onclick = () => setDevice(true);
+
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-add]');
+  if (!b) return;
+  b.textContent = 'Ajouté'; toast('Ajouté au panier');
+  setTimeout(() => { b.textContent = 'Ajouter'; }, 1600);
+});
+document.addEventListener('click', (e) => { if (e.target.closest('[data-addcart]')) toast('Ajouté au panier'); });
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-compare-toggle]');
+  if (!b) return;
+  const on = b.getAttribute('aria-pressed') !== 'true';
+  b.setAttribute('aria-pressed', String(on));
+  b.textContent = on ? 'Retirer du comparateur' : 'Ajouter au comparateur';
+  toast(on ? 'Ajouté au comparateur (3 sur 3)' : 'Retiré du comparateur');
+});
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-copy]');
+  if (!b) return;
+  try { navigator.clipboard.writeText(b.dataset.copy); } catch (_) { /* copie indisponible : le message suffit pour la maquette */ }
+  toast('Code ' + b.dataset.copy + ' copié');
+});
+
+let qty = 1;
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-qty]');
+  if (!b) return;
+  qty = Math.min(4, Math.max(1, qty + Number(b.dataset.qty)));
+  document.getElementById('qty-val').textContent = qty;
+  if (qty === 4 && Number(b.dataset.qty) > 0) toast('Stock maximum atteint');
+});
+document.querySelectorAll('.gallery button').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('.gallery button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+}));
+
+openBtn.onclick = () => {
+  viewport.style.setProperty('--sy', viewport.scrollTop + 'px');
+  viewport.style.setProperty('--vh', viewport.clientHeight + 'px');
+  viewport.style.overflowY = 'hidden';
+  filters.classList.add('open'); backdrop.classList.add('open'); openBtn.setAttribute('aria-expanded', 'true');
+  document.getElementById('close-filters').focus();
+};
+document.getElementById('close-filters').onclick = closeSheet;
+document.getElementById('apply-filters').onclick = closeSheet;
+backdrop.onclick = closeSheet;
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheet(); });
+document.querySelectorAll('.tabs button').forEach((c) => c.addEventListener('click', () => {
+  document.querySelectorAll('.tabs button').forEach((o) => o.setAttribute('aria-pressed', String(o === c)));
+}));
+
+document.getElementById('fill-demo').onclick = () => {
+  document.getElementById('username').value = 'emilys';
+  document.getElementById('password').value = 'emilyspass';
+  ['f-user', 'f-pass'].forEach((id) => document.getElementById(id).classList.remove('error'));
+  toast('Compte de démonstration rempli');
+};
+document.getElementById('toggle-pass').onclick = (e) => {
+  const input = document.getElementById('password');
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  e.currentTarget.setAttribute('aria-pressed', String(show));
+  e.currentTarget.textContent = show ? 'Masquer' : 'Afficher';
+};
+function validateLogin() {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value;
+  document.getElementById('f-user').classList.toggle('error', !u);
+  document.getElementById('f-pass').classList.toggle('error', !p);
+  document.getElementById('username').setAttribute('aria-invalid', String(!u));
+  document.getElementById('password').setAttribute('aria-invalid', String(!p));
+  if (u && p) toast('Connexion réussie');
+  else (u ? document.getElementById('password') : document.getElementById('username')).focus();
+}
+
+/* Ouverture directe : sobre.html#cart?mobile,full */
+const [startScreen, startOpts = ''] = location.hash.slice(1).split('?');
+if (screens.includes(startScreen)) go(startScreen);
+if (startOpts.includes('mobile')) setDevice(true);
+if (startOpts.includes('full')) document.body.classList.add('full');
+</script>
+</body>
+</html>
