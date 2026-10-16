@@ -23,7 +23,6 @@ useSeoMeta({
       <img :src="auth.user.image" :alt="`Avatar de ${auth.user.firstName}`" class="avatar" >
 
       <div class="account-info">
-        <p class="eyebrow">ChampaShop</p>
         <h1>{{ auth.user.firstName }} {{ auth.user.lastName }}</h1>
         <dl>
           <div>
@@ -36,7 +35,7 @@ useSeoMeta({
           </div>
         </dl>
 
-        <button type="button" class="logout-button" @click="onLogout">Déconnexion</button>
+        <button type="button" class="btn ghost logout-button" @click="onLogout">Déconnexion</button>
       </div>
     </section>
   </main>
@@ -46,94 +45,63 @@ useSeoMeta({
 .account-page {
   max-width: 640px;
   margin: 0 auto;
-  padding: 3.5rem 1.25rem 4rem;
+  padding: 3.5rem 1.5rem 4rem;
 }
 
 .account-card {
   display: flex;
   gap: 1.5rem;
   align-items: center;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  box-shadow: var(--shadow-sm);
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .avatar {
   width: 88px;
   height: 88px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   object-fit: cover;
-  background: #f3f2ee;
+  background: var(--color-tile);
   flex-shrink: 0;
 }
 
-.eyebrow {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-brand);
-}
-
 h1 {
-  margin: 0.15rem 0 1rem;
-  font-size: clamp(1.5rem, 3.5vw, 1.9rem);
+  margin: 0 0 1rem;
+  font-size: 1.7rem;
   letter-spacing: -0.02em;
 }
 
 dl {
-  display: grid;
-  gap: 0.4rem;
   margin: 0 0 1.25rem;
+  border-top: 1px solid var(--color-text);
 }
 
 dl div {
-  display: flex;
-  gap: 0.5rem;
-  font-size: 0.9rem;
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.92rem;
 }
 
 dt {
-  min-width: 6rem;
-  font-weight: 700;
   color: var(--color-muted);
 }
 
 dd {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
-.logout-button {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-danger);
-  padding: 0.65rem 1.1rem;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.logout-button:hover {
-  background: #fef2f2;
-}
-
-.logout-button:focus-visible {
-  outline: 3px solid var(--color-brand);
-  outline-offset: 2px;
-}
-
-@media (max-width: 480px) {
-  .account-card {
-    flex-direction: column;
-    text-align: center;
+@media (max-width: 640px) {
+  .account-page {
+    padding-inline: 1rem;
   }
 
-  dl div {
-    justify-content: center;
+  .account-card {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

@@ -10,6 +10,7 @@ const password = ref('emilyspass')
 const expiresInMins = ref(60)
 const formError = ref<string | null>(null)
 const submitting = ref(false)
+const showPassword = ref(false)
 
 const redirectTarget = computed(() => {
   const target = route.query.redirect
@@ -44,9 +45,12 @@ useSeoMeta({
 <template>
   <main class="login-page">
     <section class="login-card">
-      <p class="eyebrow">ChampaShop</p>
-      <h1>Connexion</h1>
-      <p class="hint">Compte de démonstration : <code>emilys</code> / <code>emilyspass</code></p>
+      <div>
+        <h1>Connexion</h1>
+        <p class="sub">Identifiez-vous pour valider votre commande.</p>
+      </div>
+
+      <p class="hint">Compte de démonstration<br><code>emilys / emilyspass</code></p>
 
       <form class="login-form" novalidate @submit.prevent="onSubmit">
         <label class="field">
@@ -54,10 +58,15 @@ useSeoMeta({
           <input v-model="username" type="text" name="username" autocomplete="username" required >
         </label>
 
-        <label class="field">
-          <span>Mot de passe</span>
-          <input v-model="password" type="password" name="password" autocomplete="current-password" required >
-        </label>
+        <div class="field">
+          <label for="login-password">Mot de passe</label>
+          <div class="control">
+            <input id="login-password" v-model="password" :type="showPassword ? 'text' : 'password'" name="password" autocomplete="current-password" required >
+            <button type="button" class="toggle" :aria-pressed="showPassword" @click="showPassword = !showPassword">
+              {{ showPassword ? 'Masquer' : 'Afficher' }}
+            </button>
+          </div>
+        </div>
 
         <details class="advanced">
           <summary>Options avancées</summary>
@@ -69,7 +78,7 @@ useSeoMeta({
 
         <p v-if="formError" class="form-error" role="alert">{{ formError }}</p>
 
-        <button type="submit" class="submit-button" :disabled="submitting">
+        <button type="submit" class="btn submit-button" :disabled="submitting">
           {{ submitting ? 'Connexion...' : 'Se connecter' }}
         </button>
       </form>
@@ -79,117 +88,139 @@ useSeoMeta({
 
 <style scoped>
 .login-page {
-  max-width: 440px;
-  margin: 0 auto;
-  padding: 3.5rem 1.25rem 4rem;
+  display: grid;
+  justify-items: center;
+  padding: 4rem 1.5rem 4rem;
 }
 
 .login-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  box-shadow: var(--shadow-sm);
-}
-
-.eyebrow {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-brand);
+  width: 100%;
+  max-width: 400px;
+  display: grid;
+  gap: 1.5rem;
 }
 
 h1 {
-  margin: 0.15rem 0 0.5rem;
-  font-size: clamp(1.7rem, 4vw, 2.1rem);
+  margin: 0;
+  font-size: 1.9rem;
   letter-spacing: -0.02em;
 }
 
-.hint {
-  margin: 0 0 1.5rem;
+.sub {
+  margin: 0.3rem 0 0;
   color: var(--color-muted);
-  font-size: 0.85rem;
+}
+
+.hint {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--color-link);
+  background: var(--color-surface-2);
+  font-size: 0.88rem;
 }
 
 .hint code {
-  background: #f3f2ee;
-  border-radius: 4px;
-  padding: 0.1rem 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
 }
 
 .login-form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 1.1rem;
 }
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-muted);
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field > span,
+.field > label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.control {
+  position: relative;
 }
 
 .field input {
-  padding: 0.7rem 0.85rem;
-  border: 1px solid var(--color-border);
+  width: 100%;
+  min-height: 48px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
+  background: #fff;
   font: inherit;
-  background: #fafaf9;
   color: var(--color-text);
 }
 
-.field input:focus-visible {
-  outline: 3px solid var(--color-brand);
+.control input {
+  padding-right: 6rem;
+}
+
+.field input:hover {
+  border-color: var(--color-text);
+}
+
+.field input:focus {
+  outline: 2px solid var(--color-link);
   outline-offset: 1px;
+  border-color: var(--color-link);
+}
+
+.toggle {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
 }
 
 .advanced {
-  font-size: 0.82rem;
-  color: var(--color-muted);
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
 }
 
 .advanced summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.9rem;
+  color: var(--color-muted);
   cursor: pointer;
-  font-weight: 600;
 }
 
-.advanced .field {
-  margin-top: 0.75rem;
+.advanced[open] summary {
+  margin-bottom: 0.5rem;
 }
 
 .form-error {
   margin: 0;
-  padding: 0.65rem 0.8rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--color-danger);
+  background: var(--color-surface-2);
   color: var(--color-danger);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
 }
 
 .submit-button {
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-text);
-  color: white;
-  padding: 0.85rem;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
+  min-height: 52px;
+  font-size: 1rem;
 }
 
-.submit-button:disabled {
-  background: var(--color-muted);
-  cursor: not-allowed;
-}
-
-.submit-button:focus-visible {
-  outline: 3px solid var(--color-brand);
-  outline-offset: 2px;
+@media (max-width: 640px) {
+  .login-page {
+    padding: 2rem 1rem;
+  }
 }
 </style>
