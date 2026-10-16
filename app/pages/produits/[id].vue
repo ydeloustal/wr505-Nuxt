@@ -47,6 +47,13 @@ useSeoMeta({
   ogType: 'website',
 })
 
+const { record: recordView } = useRecentlyViewed()
+
+// Un produit n'entre dans l'historique qu'une fois chargé : une fiche 404 n'est jamais mémorisée.
+watch(product, (loaded) => {
+  if (loaded) recordView(loaded.id)
+}, { immediate: true })
+
 const cart = useCartStore()
 const quantity = ref(1)
 const justAdded = ref(false)
@@ -146,6 +153,8 @@ const addToCart = () => {
         <p v-if="cart.stockMessage" class="stock-message" role="alert">{{ cart.stockMessage }}</p>
       </div>
     </article>
+
+    <RecentlyViewed v-if="product" :exclude-id="product.id" class="recent-section" />
   </main>
 </template>
 
@@ -290,6 +299,10 @@ h1 {
   border-radius: 999px;
   padding: 0.35rem 0.7rem;
   font-size: 0.8rem;
+}
+
+.recent-section {
+  margin-top: 2.5rem;
 }
 
 .cart-actions {

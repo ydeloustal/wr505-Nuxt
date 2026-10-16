@@ -33,6 +33,8 @@ const features = [
         <p>{{ feature.text }}</p>
       </article>
     </section>
+
+    <RecentlyViewed />
   </main>
 </template>
 
