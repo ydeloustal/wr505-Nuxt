@@ -1,20 +1,27 @@
 :root {
-  --color-bg: #f6f5f2;
+  --color-bg: #ffffff;
   --color-surface: #ffffff;
-  --color-border: #e7e5e0;
-  --color-text: #14141a;
-  --color-muted: #6b6b76;
-  --color-brand: #7c3aed;
-  --color-brand-dark: #5b21b6;
-  --color-accent: #f97316;
-  --color-danger: #dc2626;
-  --color-success: #16a34a;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --shadow-sm: 0 2px 8px rgba(20, 20, 26, 0.06);
-  --shadow-md: 0 12px 32px rgba(20, 20, 26, 0.08);
-  --shadow-lg: 0 24px 60px rgba(20, 20, 26, 0.12);
+  --color-surface-2: #f7f7f5;
+  --color-tile: #f1f1ee;
+  --color-border: #e4e4e0;
+  --color-border-strong: #c9c9c3;
+  --color-text: #161616;
+  --color-muted: #5f5f5a;
+  --color-brand: #161616;
+  --color-brand-dark: #3a3a37;
+  --color-link: #1f3f7a;
+  --color-accent: #9a3412;
+  --color-danger: #b42318;
+  --color-success: #2f6b3f;
+  --color-warning: #8a5a00;
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 * {
@@ -28,14 +35,29 @@ body {
 }
 
 body {
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--font-body);
   background: var(--color-bg);
   color: var(--color-text);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
 }
 
 a {
   color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
 }
 
 .shell {
@@ -48,17 +70,92 @@ a {
   flex: 1;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Petit libellé en capitales au-dessus d'un titre ou d'une carte. */
+.label-s {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Boutons : plein (action principale) et contour (action secondaire). */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.25rem;
+  border: 1px solid var(--color-text);
+  border-radius: var(--radius-sm);
+  background: var(--color-text);
+  color: #fff;
+  font: inherit;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--color-brand-dark);
+  border-color: var(--color-brand-dark);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn.ghost {
+  background: #fff;
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.btn.ghost:hover:not(:disabled) {
+  background: #fff;
+  border-color: var(--color-text);
+}
+
 .link-button {
   border: none;
   background: transparent;
-  padding: 0.6rem 0;
+  padding: 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   font: inherit;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-brand);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 
 .link-button:hover {
-  color: var(--color-brand-dark);
+  text-decoration-thickness: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

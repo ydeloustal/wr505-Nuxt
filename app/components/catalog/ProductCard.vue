@@ -39,7 +39,7 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
       <div class="product-info">
         <p class="product-category">{{ product.category }}</p>
         <h2>{{ product.title }}</h2>
-        <span class="rating" :aria-label="`Note : ${product.rating.toFixed(1)} sur 5`">★ {{ product.rating.toFixed(1) }}</span>
+        <span class="rating" :aria-label="`Note : ${product.rating.toFixed(1)} sur 5`">{{ product.rating.toFixed(1) }} sur 5</span>
       </div>
     </NuxtLink>
 
@@ -56,8 +56,7 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
         :aria-label="justAdded ? `${product.title} ajouté au panier` : `Ajouter ${product.title} au panier`"
         @click="addToCart"
       >
-        <svg v-if="justAdded" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-        <svg v-else viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+        {{ justAdded ? 'Ajouté' : 'Ajouter' }}
       </button>
     </div>
   </article>
@@ -65,32 +64,26 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
 
 <style scoped>
 .product-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
+  position: relative;
   display: flex;
   flex-direction: column;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+  gap: 0.6rem;
 }
 
 .product-link {
-  text-decoration: none;
-  color: inherit;
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
   flex: 1;
+  color: inherit;
+  text-decoration: none;
 }
 
 .product-image-wrap {
   position: relative;
   aspect-ratio: 1;
-  background: #f3f2ee;
+  background: var(--color-tile);
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
@@ -99,106 +92,109 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.35s ease;
-}
-
-.product-card:hover .product-image-wrap img {
-  transform: scale(1.06);
 }
 
 .discount-badge {
   position: absolute;
   top: 0.6rem;
   left: 0.6rem;
-  background: var(--color-danger);
-  color: white;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.25rem 0.55rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  background: #fff;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-accent);
 }
 
 .product-info {
-  padding: 0.875rem 0.875rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  flex: 1;
+  display: grid;
+  gap: 0.15rem;
 }
 
 .product-category {
   margin: 0;
-  color: var(--color-brand);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
 }
 
 .product-info h2 {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.35;
+  font-size: 0.98rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.product-link:hover h2 {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .rating {
-  color: #b45309;
-  font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
 }
 
 .card-compare {
-  padding: 0.5rem 0.875rem 0;
+  margin-top: -0.25rem;
 }
 
 .card-foot {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
-  padding: 0.5rem 0.875rem 0.875rem;
+  margin-top: auto;
 }
 
 .price {
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 44px;
+  white-space: nowrap;
 }
 
 .add-to-cart {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border: none;
-  border-radius: 999px;
-  background: var(--color-text);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.2s ease;
 }
 
 .add-to-cart:hover {
-  transform: scale(1.06);
+  border-color: var(--color-text);
 }
 
 .add-to-cart.added {
-  background: var(--color-success);
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
 
-@media (max-width: 400px) {
-    .card-foot {
-      padding: 0.5rem 0.625rem 0.625rem;
-    }
+@media (max-width: 640px) {
+  .card-foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
 
-    .product-info {
-      padding: 0.625rem 0.625rem 0;
-    }
+  .price {
+    line-height: 1.4;
+  }
 
-    .price {
-      font-size: 0.9rem;
-    }
+  .add-to-cart {
+    width: 100%;
+  }
 }
 </style>

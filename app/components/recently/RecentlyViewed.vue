@@ -53,9 +53,9 @@ const { data: products } = useAsyncData(
 
 <style scoped>
 .recently-viewed {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
+  margin-top: 3.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-text);
 }
 
 .head {
@@ -63,79 +63,85 @@ const { data: products } = useAsyncData(
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .head h2 {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
 }
 
 .clear {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
   background: none;
-  border: none;
-  padding: 0.25rem;
-  color: var(--color-muted);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-link);
   text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 
-.clear:hover {
-  color: var(--color-danger);
-}
-
 .list {
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1.25rem 1rem;
 }
 
 .item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  height: 100%;
-  padding: 0.6rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: inherit;
+  display: grid;
+  gap: 0.5rem;
   text-decoration: none;
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
-}
-
-.item:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.item:focus-visible {
-  outline: 2px solid var(--color-brand);
-  outline-offset: 2px;
 }
 
 .item img {
   width: 100%;
-  height: auto;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 8px;
-  background: #f3f2ee;
+  border-radius: var(--radius-sm);
+  background: var(--color-tile);
 }
 
 .title {
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 0.86rem;
+  font-weight: 500;
   line-height: 1.3;
 }
 
+.item:hover .title {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .price {
-  font-size: 0.85rem;
-  font-weight: 800;
+  font-size: 0.86rem;
+  color: var(--color-muted);
+}
+
+@media (max-width: 900px) {
+  .list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .list {
+    display: flex;
+    overflow-x: auto;
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    scrollbar-width: none;
+  }
+
+  .item {
+    flex: none;
+    width: 124px;
+  }
 }
 </style>

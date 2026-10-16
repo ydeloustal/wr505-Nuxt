@@ -56,8 +56,8 @@ watch(
   width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
-  border-radius: var(--radius-md);
-  background: #f3f2ee;
+  border-radius: var(--radius-sm);
+  background: var(--color-tile);
 }
 
 .placeholder {
@@ -67,32 +67,31 @@ watch(
 }
 
 .thumbs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.6rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .thumb {
-  width: 72px;
-  height: 72px;
+  width: 100%;
+  aspect-ratio: 1;
   padding: 0;
-  border: 2px solid var(--color-border);
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  background: #f3f2ee;
+  background: var(--color-tile);
   cursor: pointer;
   overflow: hidden;
 }
 
-.thumb:focus-visible {
-  outline: 3px solid var(--color-brand);
-  outline-offset: 2px;
+.thumb:hover {
+  border-color: var(--color-border-strong);
 }
 
 .thumb.active {
-  border-color: var(--color-brand);
+  border-color: var(--color-text);
 }
 
 .thumb img {

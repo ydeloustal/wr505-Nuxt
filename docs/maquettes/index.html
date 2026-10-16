@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquettes ChampaShop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Rubik:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf9fc;
+  --surface: #ffffff;
+  --surface-2: #f4f2f8;
+  --border: #e6e2ee;
+  --text: #17141f;
+  --muted: #5a566a;
+  --brand: #6d28d9;
+  --brand-dark: #5b21b6;
+  --brand-soft: #f1ebfe;
+  --accent-soft: #fff1e6;
+  --accent-text: #9a3412;
+  --success: #15803d;
+  --success-soft: #e8f7ee;
+  --warn: #b45309;
+  --warn-soft: #fef3c7;
+  --danger: #b91c1c;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 1px 3px rgba(23, 20, 31, .06), 0 1px 2px rgba(23, 20, 31, .04);
+  --shadow-md: 0 10px 28px rgba(23, 20, 31, .09);
+  --shadow-lg: 0 24px 60px rgba(23, 20, 31, .16);
+  --font-head: 'Rubik', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Nunito Sans', 'Segoe UI', system-ui, sans-serif;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-body);
+  background: #e9e6f0;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+h1, h2, h3, h4 { font-family: var(--font-head); line-height: 1.15; margin: 0; letter-spacing: -.01em; }
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+ul { list-style: none; margin: 0; padding: 0; }
+svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+svg.i.sm { width: 16px; height: 16px; }
+svg.i.fill { fill: currentColor; stroke: none; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Présentation ---------- */
+.stage-bar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1.5rem;
+  padding: .75rem 1.25rem;
+  background: #17141f; color: #fff;
+}
+.stage-bar h1 { font-size: 1rem; color: #fff; }
+.stage-bar h1 small { font-family: var(--font-body); font-weight: 400; opacity: .7; margin-left: .5rem; }
+.stage-tabs, .stage-device { display: flex; gap: .25rem; flex-wrap: wrap; }
+.stage-tabs button, .stage-device button {
+  min-height: 40px; padding: 0 .9rem; border-radius: 999px; border: 1px solid transparent;
+  background: transparent; color: #cfcadd; font-weight: 600; font-size: .9rem;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.stage-tabs button:hover, .stage-device button:hover { background: rgba(255,255,255,.1); color: #fff; }
+.stage-tabs button[aria-selected="true"], .stage-device button[aria-pressed="true"] { background: #fff; color: #17141f; }
+.stage { padding: 1.5rem 1rem 3rem; display: flex; justify-content: center; }
+.device {
+  width: min(100%, 1280px);
+  background: var(--bg);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid #cfc9de;
+  transition: width .35s var(--ease);
+}
+.device.mobile { width: 390px; border-radius: 34px; border: 8px solid #17141f; }
+.viewport {
+  height: min(820px, calc(100vh - 150px));
+  min-height: 560px;
+  overflow-y: auto; overflow-x: hidden;
+  container-type: inline-size;
+  scroll-behavior: smooth;
+  position: relative;
+  transform: translateZ(0); /* rattache les éléments « fixed » (tiroir, fond) au cadre */
+}
+.notes { max-width: 1280px; margin: 0 auto; padding: 0 1rem 3rem; color: #3b3650; font-size: .92rem; }
+.notes h2 { font-size: 1.1rem; margin-bottom: .5rem; }
+.notes ul { display: grid; gap: .35rem; padding-left: 1.1rem; list-style: disc; }
+
+.summary, .promo-form, .buy-box, .filter-group, .login-card, .form, .field { grid-template-columns: minmax(0, 1fr); }
+body.full .viewport { height: auto; overflow: visible; transform: none; }
+
+/* ---------- Boutons & composants ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 44px; padding: 0 1.25rem; border-radius: 999px; border: 1.5px solid transparent;
+  font-weight: 700; font-size: .95rem; white-space: nowrap;
+  transition: background .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
+}
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--brand); color: #fff; }
+.btn-primary:hover { background: var(--brand-dark); box-shadow: var(--shadow-md); }
+.btn-ghost { background: var(--surface); border-color: var(--border); color: var(--text); }
+.btn-ghost:hover { border-color: var(--brand); color: var(--brand); }
+.btn-lg { min-height: 52px; padding: 0 1.75rem; font-size: 1.02rem; }
+.btn-block { width: 100%; }
+.eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); }
+.badge {
+  display: inline-flex; align-items: center; gap: .25rem; padding: .2rem .6rem; border-radius: 999px;
+  font-size: .78rem; font-weight: 700; background: var(--accent-soft); color: var(--accent-text);
+}
+.badge.green { background: var(--success-soft); color: var(--success); }
+.badge.violet { background: var(--brand-soft); color: var(--brand-dark); }
+.chip {
+  display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; padding: 0 1rem;
+  border-radius: 999px; border: 1.5px solid var(--border); background: var(--surface);
+  font-weight: 600; font-size: .9rem; white-space: nowrap;
+  transition: border-color .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
+}
+.chip:hover { border-color: var(--brand); color: var(--brand); }
+.chip[aria-pressed="true"], .chip.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+.chip.removable { background: var(--brand-soft); border-color: transparent; color: var(--brand-dark); padding-right: .6rem; }
+.stars { display: inline-flex; align-items: center; gap: .25rem; font-weight: 700; font-size: .88rem; }
+.stars svg { color: #f59e0b; width: 15px; height: 15px; }
+.stars span { color: var(--muted); font-weight: 600; }
+
+/* ---------- App shell ---------- */
+.screen[hidden] { display: none; }
+.wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding-inline: 1.5rem; }
+.announce { background: var(--text); color: #fff; font-size: .85rem; text-align: center; padding: .5rem 1rem; }
+.announce b { color: #c4b5fd; }
+
+.header { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.header .wrap { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1.5rem; min-height: 72px; }
+.logo { font-family: var(--font-head); font-weight: 700; font-size: 1.4rem; letter-spacing: -.02em; display: flex; align-items: center; gap: .55rem; }
+.logo-mark { width: 34px; height: 34px; border-radius: 11px; background: linear-gradient(135deg, var(--brand), #a855f7); display: grid; place-items: center; color: #fff; }
+.logo b { color: var(--brand); font-weight: 700; }
+.search { position: relative; max-width: 560px; width: 100%; margin-inline: auto; }
+.search svg { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.search input {
+  width: 100%; min-height: 46px; padding: 0 1rem 0 2.8rem; border-radius: 999px;
+  border: 1.5px solid transparent; background: var(--surface-2);
+  transition: border-color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
+}
+.search input::placeholder { color: #6f6a80; }
+.search input:hover { background: #eeebf5; }
+.search input:focus { outline: none; background: #fff; border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
+.header-actions { display: flex; align-items: center; gap: .25rem; }
+.nav-link {
+  display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; padding: 0 .85rem; border-radius: 999px;
+  font-weight: 700; font-size: .92rem; color: var(--text); background: transparent; border: 0;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.nav-link:hover { background: var(--surface-2); }
+.nav-link[aria-current="page"] { color: var(--brand); background: var(--brand-soft); }
+.cart-btn { position: relative; width: 46px; justify-content: center; padding: 0; }
+.cart-btn .count {
+  position: absolute; top: 2px; right: 0; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px;
+  background: var(--brand); color: #fff; font-size: .72rem; font-weight: 700; display: grid; place-items: center; border: 2px solid #fff;
+}
+.subnav { border-top: 1px solid var(--border); background: #fff; }
+.subnav .wrap { display: flex; gap: .25rem; overflow-x: auto; padding-block: .35rem; scrollbar-width: none; }
+.subnav a { padding: .4rem .85rem; border-radius: 999px; font-size: .88rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.subnav a:hover { background: var(--surface-2); color: var(--text); }
+.subnav a.hot { color: var(--accent-text); }
+
+.tabbar { display: none; }
+
+/* ---------- Accueil ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(50rem 28rem at 8% -10%, rgba(168, 85, 247, .18), transparent 60%),
+    radial-gradient(40rem 24rem at 100% 0%, rgba(251, 146, 60, .16), transparent 60%),
+    var(--bg);
+}
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: center; gap: 3rem; padding-block: 4rem 3.5rem; }
+.hero h1 { font-size: clamp(2.2rem, 4.2vw, 3.5rem); margin: 1rem 0 1.1rem; }
+.hero h1 em { font-style: normal; color: var(--brand); position: relative; white-space: nowrap; }
+.hero p.lead { font-size: 1.12rem; color: var(--muted); max-width: 30rem; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+.hero-stats { display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2.25rem; }
+.hero-stats strong { display: block; font-family: var(--font-head); font-size: 1.5rem; }
+.hero-stats span { font-size: .85rem; color: var(--muted); }
+.hero-visual { position: relative; min-height: 380px; }
+.hero-visual .art { position: absolute; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border: 4px solid #fff; }
+.hero-visual .a1 { width: 54%; aspect-ratio: 1; left: 0; top: 4%; }
+.hero-visual .a2 { width: 46%; aspect-ratio: 1; right: 0; top: 0; transform: rotate(4deg); }
+.hero-visual .a3 { width: 42%; aspect-ratio: 1; right: 8%; bottom: 0; transform: rotate(-3deg); }
+.float-card {
+  position: absolute; left: 4%; bottom: 6%; background: #fff; border-radius: var(--radius-md); padding: .85rem 1.1rem;
+  box-shadow: var(--shadow-md); display: flex; align-items: center; gap: .75rem; z-index: 2;
+}
+.float-card .ico { width: 40px; height: 40px; border-radius: 12px; background: var(--success-soft); color: var(--success); display: grid; place-items: center; }
+.float-card strong { display: block; font-size: .92rem; }
+.float-card span { font-size: .8rem; color: var(--muted); }
+
+.trust { background: #fff; border-block: 1px solid var(--border); }
+.trust ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; padding-block: 1.25rem; }
+.trust li { display: flex; align-items: center; gap: .75rem; font-size: .9rem; }
+.trust .ico { width: 42px; height: 42px; border-radius: 12px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; flex: none; }
+.trust strong { display: block; font-size: .92rem; }
+.trust span { color: var(--muted); font-size: .82rem; }
+
+.section { padding-block: 3rem 0.5rem; }
+.section-head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.section-head h2 { font-size: 1.6rem; }
+.section-head p { color: var(--muted); font-size: .95rem; margin-top: .25rem; }
+.link-more { color: var(--brand); font-weight: 700; font-size: .92rem; display: inline-flex; align-items: center; gap: .25rem; min-height: 44px; }
+.link-more:hover { text-decoration: underline; }
+
+.cats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .9rem; }
+.cat {
+  display: flex; flex-direction: column; align-items: center; gap: .65rem; padding: 1.1rem .5rem; border-radius: var(--radius-md);
+  background: #fff; border: 1.5px solid var(--border); font-weight: 700; font-size: .92rem;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
+}
+.cat:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--brand); }
+.cat .disc { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; color: var(--brand); }
+.cat .disc svg { width: 28px; height: 28px; }
+.cat small { color: var(--muted); font-weight: 600; font-size: .78rem; margin-top: -.4rem; }
+
+.promos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.promo {
+  position: relative; overflow: hidden; border-radius: var(--radius-lg); padding: 1.75rem; min-height: 190px;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 1.25rem; color: #fff;
+}
+.promo.p1 { background: linear-gradient(135deg, #5b21b6, #9333ea); }
+.promo.p2 { background: linear-gradient(135deg, #9a3412, #ea580c); }
+.promo::after { content: ""; position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,.12); }
+.promo h3 { font-size: 1.5rem; max-width: 18rem; position: relative; z-index: 1; }
+.promo p { opacity: .9; font-size: .92rem; position: relative; z-index: 1; margin-top: .4rem; }
+.promo .code {
+  position: relative; z-index: 1; align-self: start; display: inline-flex; align-items: center; gap: .6rem;
+  min-height: 44px; padding: 0 1rem; border-radius: 999px; background: rgba(255,255,255,.18); border: 1.5px dashed rgba(255,255,255,.7);
+  color: #fff; font-weight: 700; letter-spacing: .06em; transition: background .2s var(--ease);
+}
+.promo .code:hover { background: rgba(255,255,255,.3); }
+.promo .code small { font-weight: 600; letter-spacing: 0; opacity: .85; }
+
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; }
+.card {
+  position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); overflow: hidden;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
+}
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: #d4cce6; }
+.card .art { aspect-ratio: 1 / 1; border-radius: 0; }
+.card .tag { position: absolute; top: .75rem; left: .75rem; }
+.card-body { padding: .9rem 1rem .5rem; display: grid; gap: .3rem; flex: 1; }
+.card-cat { font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--muted); }
+.card-title { font-family: var(--font-head); font-weight: 500; font-size: 1rem; line-height: 1.3; }
+.card-title a::after { content: ""; position: absolute; inset: 0; }
+.card-foot { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .5rem 1rem 1rem; }
+.price { display: flex; flex-direction: column; font-family: var(--font-head); font-weight: 600; font-size: 1.15rem; line-height: 1.2; white-space: nowrap; }
+.price s { font-family: var(--font-body); font-weight: 400; font-size: .82rem; color: var(--muted); }
+.add-btn {
+  position: relative; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--brand-soft); color: var(--brand);
+  display: grid; place-items: center; transition: background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+}
+.add-btn:hover { background: var(--brand); color: #fff; }
+.add-btn:active { transform: scale(.92); }
+.add-btn.done { background: var(--success); color: #fff; }
+.cmp {
+  position: relative; z-index: 2; display: inline-flex; align-items: center; gap: .5rem; padding: 0 1rem 1rem; margin-top: -.25rem;
+  font-size: .82rem; font-weight: 600; color: var(--muted); min-height: 44px; cursor: pointer;
+}
+.cmp input { width: 18px; height: 18px; accent-color: var(--brand); cursor: pointer; }
+.cmp:hover { color: var(--brand); }
+
+.art { display: grid; place-items: center; position: relative; overflow: hidden; }
+.art .glyph { width: 46%; height: 46%; fill: none; stroke: rgba(23, 20, 31, .62); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; position: relative; z-index: 1; }
+.art::before { content: ""; position: absolute; width: 70%; height: 70%; border-radius: 50%; background: rgba(255,255,255,.55); }
+.art.beauty { background: linear-gradient(145deg, #fde4f1, #e9ddff); }
+.art.fragrance { background: linear-gradient(145deg, #fff0c7, #ffd9bd); }
+.art.furniture { background: linear-gradient(145deg, #d8eefc, #e4dcfb); }
+.art.laptops { background: linear-gradient(145deg, #e3e8f0, #d6d0fb); }
+.art.fashion { background: linear-gradient(145deg, #d6f5e0, #d3ebfb); }
+.art.audio { background: linear-gradient(145deg, #ffe0d3, #ffd2e6); }
+
+.recent { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1rem; }
+.recent a { display: grid; gap: .5rem; padding: .6rem; border-radius: var(--radius-md); background: #fff; border: 1px solid var(--border); transition: box-shadow .25s var(--ease), transform .25s var(--ease); }
+.recent a:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.recent .art { aspect-ratio: 1; border-radius: 10px; }
+.recent b { font-size: .84rem; font-weight: 700; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.recent span { font-size: .85rem; color: var(--muted); font-weight: 600; }
+.btn-text { background: none; border: 0; color: var(--brand); font-weight: 700; font-size: .9rem; min-height: 44px; padding: 0 .25rem; }
+.btn-text:hover { text-decoration: underline; }
+
+.newsletter { margin-top: 3rem; border-radius: var(--radius-lg); padding: 2.5rem; background: var(--text); color: #fff; display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: center; }
+.newsletter h2 { font-size: 1.5rem; }
+.newsletter p { opacity: .75; margin-top: .35rem; font-size: .95rem; }
+.newsletter form { display: flex; gap: .5rem; }
+.newsletter input { min-height: 48px; padding: 0 1.2rem; border-radius: 999px; border: 0; width: 260px; }
+
+.footer { margin-top: 3rem; border-top: 1px solid var(--border); background: #fff; }
+.footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; align-items: center; padding-block: 1.75rem; color: var(--muted); font-size: .88rem; }
+.footer nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.footer a:hover { color: var(--brand); }
+
+/* ---------- Catalogue ---------- */
+.crumbs { display: flex; align-items: center; gap: .35rem; font-size: .85rem; color: var(--muted); padding-block: 1.25rem .5rem; flex-wrap: wrap; }
+.crumbs a { font-weight: 600; min-height: 24px; }
+.crumbs a:hover { color: var(--brand); text-decoration: underline; }
+.crumbs [aria-current] { color: var(--text); font-weight: 700; }
+.page-title { display: flex; align-items: end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.page-title h1 { font-size: 2rem; }
+.page-title p { color: var(--muted); font-size: .95rem; margin-top: .2rem; }
+.toolbar { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+.select { position: relative; }
+.select select {
+  appearance: none; min-height: 44px; padding: 0 2.6rem 0 1.1rem; border-radius: 999px; border: 1.5px solid var(--border); background: #fff; font-weight: 600; font-size: .9rem;
+}
+.select select:hover { border-color: var(--brand); }
+.select svg { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
+.cat-pills { display: flex; gap: .5rem; overflow-x: auto; padding: .25rem .25rem .75rem; margin-inline: -.25rem; scrollbar-width: none; }
+.catalog { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 2rem; align-items: start; }
+.filters { position: sticky; top: 90px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; display: grid; gap: 1.5rem; }
+.filters h2 { font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
+.filter-group { display: grid; gap: .75rem; }
+.filter-group h3 { font-size: .9rem; }
+.opt { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 .75rem; border-radius: 10px; border: 0; background: transparent; font-weight: 600; font-size: .92rem; width: 100%; text-align: left; transition: background .2s var(--ease); }
+.opt:hover { background: var(--surface-2); }
+.opt[aria-pressed="true"] { background: var(--brand-soft); color: var(--brand-dark); }
+.opt em { font-style: normal; font-size: .8rem; color: var(--muted); font-weight: 600; }
+.range { position: relative; height: 22px; }
+.range .track { position: absolute; left: 0; right: 0; top: 9px; height: 4px; border-radius: 4px; background: var(--border); }
+.range .fill { position: absolute; left: 8%; right: 38%; top: 9px; height: 4px; border-radius: 4px; background: var(--brand); }
+.range .thumb { position: absolute; top: 1px; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 3px solid var(--brand); box-shadow: var(--shadow-sm); }
+.price-fields { display: flex; align-items: center; gap: .5rem; }
+.price-fields label { flex: 1; position: relative; }
+.price-fields input { width: 100%; min-height: 44px; padding: 0 1.6rem 0 .8rem; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; }
+.price-fields input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
+.price-fields label span { position: absolute; right: .7rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .85rem; pointer-events: none; }
+.catalog .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.active-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+.mobile-only { display: none; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: .35rem; margin-top: 2.25rem; }
+.pagination button { min-width: 44px; min-height: 44px; border-radius: 12px; border: 1.5px solid var(--border); background: #fff; font-weight: 700; }
+.pagination button:hover { border-color: var(--brand); color: var(--brand); }
+.pagination button[aria-current="page"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+.compare-bar {
+  position: sticky; bottom: 16px; z-index: 15; margin: 2rem auto 0; width: fit-content; max-width: calc(100% - 2rem);
+  display: flex; align-items: center; gap: 1rem; padding: .6rem .6rem .6rem 1.25rem; border-radius: 999px;
+  background: var(--text); color: #fff; box-shadow: var(--shadow-lg);
+}
+.compare-bar .thumbs { display: flex; }
+.compare-bar .thumbs .art { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--text); margin-left: -8px; }
+.compare-bar .thumbs .art:first-child { margin-left: 0; }
+.compare-bar .thumbs .art .glyph { width: 56%; height: 56%; }
+.compare-bar .thumbs .art::before { display: none; }
+.compare-bar span.t { font-size: .9rem; font-weight: 600; }
+.compare-bar .btn { min-height: 40px; }
+.compare-bar .clear { background: none; border: 0; color: #cfc9de; font-weight: 700; min-height: 40px; padding: 0 .5rem; }
+.compare-bar .clear:hover { color: #fff; }
+.sheet-backdrop, .filters .sheet-close { display: none; }
+
+/* ---------- Fiche produit ---------- */
+.detail { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 3rem; align-items: start; padding-block: .75rem 1rem; }
+.gallery { display: grid; gap: .9rem; position: sticky; top: 90px; }
+.gallery .main { aspect-ratio: 1; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+.gallery .thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: .65rem; }
+.gallery .thumbs button { padding: 0; border: 2px solid transparent; border-radius: 14px; overflow: hidden; background: none; aspect-ratio: 1; transition: border-color .2s var(--ease); }
+.gallery .thumbs button[aria-pressed="true"] { border-color: var(--brand); }
+.gallery .thumbs button:hover { border-color: #c4b5fd; }
+.gallery .thumbs .art { width: 100%; height: 100%; }
+.gallery .thumbs .art .glyph { width: 50%; height: 50%; }
+.buy h1 { font-size: 2.3rem; margin: .5rem 0 .75rem; }
+.meta { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.buy .price-row { display: flex; align-items: baseline; gap: .75rem; margin: 1.25rem 0 .25rem; flex-wrap: wrap; }
+.buy .price-big { font-family: var(--font-head); font-weight: 600; font-size: 2.4rem; letter-spacing: -.02em; }
+.buy .price-row s { color: var(--muted); font-size: 1.05rem; }
+.buy .desc { color: var(--muted); font-size: 1.02rem; margin-top: 1rem; max-width: 36rem; }
+.stock { display: inline-flex; align-items: center; gap: .55rem; font-weight: 700; font-size: .92rem; margin-top: 1.25rem; padding: .45rem .9rem .45rem .75rem; border-radius: 999px; background: var(--success-soft); color: var(--success); }
+.stock::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+.stock.low { background: var(--warn-soft); color: var(--warn); }
+.buy-box { margin-top: 1.5rem; padding: 1.25rem; border: 1px solid var(--border); background: #fff; border-radius: var(--radius-md); display: grid; gap: .9rem; }
+.buy-row { display: flex; gap: .75rem; align-items: stretch; }
+.qty { display: inline-flex; align-items: center; border: 1.5px solid var(--border); border-radius: 999px; background: #fff; flex: none; }
+.qty button { width: 44px; height: 48px; border: 0; background: none; border-radius: 999px; display: grid; place-items: center; }
+.qty button:hover { background: var(--surface-2); color: var(--brand); }
+.qty output { min-width: 28px; text-align: center; font-weight: 700; }
+.buy-row .btn-primary { flex: 1; }
+.info-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin-top: 1.25rem; }
+.info-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; display: grid; gap: .5rem; align-content: start; }
+.info-card .ico { width: 38px; height: 38px; border-radius: 11px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; }
+.info-card strong { font-size: .92rem; }
+.info-card span { font-size: .84rem; color: var(--muted); line-height: 1.4; }
+.tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.tags span { padding: .25rem .75rem; border-radius: 999px; background: var(--surface-2); font-size: .82rem; font-weight: 600; color: var(--muted); }
+.mobile-buybar { display: none; }
+
+/* ---------- Panier ---------- */
+.stepper { display: flex; align-items: center; gap: .75rem; margin-block: 1.25rem 1.75rem; flex-wrap: wrap; }
+.step { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: .92rem; color: var(--muted); }
+.step i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: .85rem; background: var(--surface-2); border: 1.5px solid var(--border); }
+.step.done i { background: var(--success); border-color: var(--success); color: #fff; }
+.step.current { color: var(--text); }
+.step.current i { background: var(--brand); border-color: var(--brand); color: #fff; }
+.step-line { width: 40px; height: 2px; background: var(--border); border-radius: 2px; }
+.cart-layout { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 2rem; align-items: start; }
+.ship-progress { background: var(--success-soft); border-radius: var(--radius-md); padding: 1rem 1.25rem; display: grid; gap: .6rem; margin-bottom: 1rem; }
+.ship-progress p { display: flex; align-items: center; gap: .5rem; font-weight: 700; color: var(--success); font-size: .94rem; }
+.bar { height: 8px; border-radius: 8px; background: rgba(21, 128, 61, .18); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 100%; background: var(--success); border-radius: 8px; }
+.lines { display: grid; gap: .9rem; }
+.line { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; gap: 1.1rem; align-items: center; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: .9rem; }
+.line .art { width: 104px; height: 104px; border-radius: 12px; }
+.line h3 { font-size: 1.02rem; font-weight: 500; }
+.line .sub { color: var(--muted); font-size: .85rem; margin-top: .15rem; }
+.line-side { display: grid; gap: .6rem; justify-items: end; }
+.line-total { font-family: var(--font-head); font-weight: 600; font-size: 1.1rem; }
+.line-ctrls { display: flex; align-items: center; gap: .5rem; }
+.line .qty button { height: 40px; width: 40px; }
+.icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 0; background: none; display: grid; place-items: center; color: var(--muted); transition: background .2s var(--ease), color .2s var(--ease); }
+.icon-btn:hover { background: #fee2e2; color: var(--danger); }
+.summary { position: sticky; top: 90px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; display: grid; gap: 1.1rem; box-shadow: var(--shadow-sm); }
+.summary h2 { font-size: 1.25rem; }
+.promo-form { display: grid; gap: .4rem; }
+.promo-form label { font-weight: 700; font-size: .88rem; }
+.promo-form .row { display: flex; gap: .5rem; }
+.promo-form input { flex: 1; min-width: 0; min-height: 46px; padding: 0 1rem; border-radius: 12px; border: 1.5px solid var(--border); text-transform: uppercase; }
+.promo-form input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
+.promo-form .btn { min-height: 46px; border-radius: 12px; }
+.applied { display: flex; flex-wrap: wrap; gap: .4rem; }
+.totals { display: grid; gap: .65rem; margin: 0; }
+.totals div { display: flex; justify-content: space-between; gap: 1rem; font-size: .95rem; }
+.totals dt { color: var(--muted); }
+.totals dd { margin: 0; font-weight: 700; }
+.totals .disc dd, .totals .disc dt { color: var(--success); }
+.totals .grand { padding-top: .9rem; margin-top: .25rem; border-top: 1px solid var(--border); font-size: 1.15rem; }
+.totals .grand dt { color: var(--text); font-weight: 700; font-family: var(--font-head); }
+.totals .grand dd { font-family: var(--font-head); font-size: 1.5rem; }
+.safe { display: flex; align-items: center; justify-content: center; gap: .4rem; font-size: .82rem; color: var(--muted); }
+.link-clear { text-align: center; color: var(--muted); font-weight: 600; font-size: .88rem; background: none; border: 0; min-height: 40px; }
+.link-clear:hover { color: var(--danger); text-decoration: underline; }
+.login-hint { display: flex; gap: .6rem; align-items: start; background: var(--brand-soft); border-radius: 12px; padding: .75rem .9rem; font-size: .88rem; color: var(--brand-dark); }
+
+/* ---------- Connexion ---------- */
+.login { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 640px; }
+.login-side {
+  position: relative; overflow: hidden; color: #fff; padding: 3.5rem; display: flex; flex-direction: column; justify-content: space-between; gap: 2rem;
+  background: linear-gradient(150deg, #4c1d95, #7c3aed 60%, #c026d3);
+}
+.login-side::after { content: ""; position: absolute; width: 420px; height: 420px; border-radius: 50%; background: rgba(255,255,255,.08); right: -140px; bottom: -140px; }
+.login-side h2 { font-size: 2.2rem; max-width: 22rem; position: relative; z-index: 1; }
+.login-side ul { display: grid; gap: 1rem; position: relative; z-index: 1; }
+.login-side li { display: flex; align-items: center; gap: .85rem; font-weight: 600; }
+.login-side li .ico { width: 38px; height: 38px; border-radius: 11px; background: rgba(255,255,255,.18); display: grid; place-items: center; }
+.login-main { display: grid; place-items: center; padding: 3rem 1.5rem; background: var(--bg); }
+.login-card { width: 100%; max-width: 420px; display: grid; gap: 1.4rem; }
+.login-card h1 { font-size: 2rem; }
+.login-card .sub { color: var(--muted); margin-top: .3rem; }
+.demo {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 1rem; border-radius: var(--radius-md);
+  background: var(--accent-soft); border: 1.5px dashed #fdba74;
+}
+.demo strong { display: block; font-size: .9rem; color: var(--accent-text); }
+.demo code { font-size: .84rem; color: #7c2d12; }
+.demo .btn { min-height: 40px; background: #fff; border-color: #fdba74; color: var(--accent-text); font-size: .85rem; padding: 0 1rem; }
+.demo .btn:hover { background: #ffedd5; }
+.form { display: grid; gap: 1.1rem; }
+.field { display: grid; gap: .4rem; }
+.field label { font-weight: 700; font-size: .9rem; }
+.field .ctl { position: relative; }
+.field input { width: 100%; min-height: 50px; padding: 0 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: #fff; }
+.field input:hover { border-color: #c4b5fd; }
+.field input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
+.field .toggle { position: absolute; right: 4px; top: 3px; width: 44px; height: 44px; border: 0; background: none; border-radius: 50%; color: var(--muted); display: grid; place-items: center; }
+.field .toggle:hover { color: var(--brand); background: var(--surface-2); }
+.field .help { font-size: .82rem; color: var(--muted); }
+.field.error input { border-color: var(--danger); background: #fef2f2; }
+.field .err { display: none; font-size: .84rem; font-weight: 600; color: var(--danger); align-items: center; gap: .35rem; }
+.field.error .err { display: flex; }
+details.adv { border-top: 1px solid var(--border); padding-top: .9rem; }
+details.adv summary { cursor: pointer; font-weight: 700; font-size: .9rem; color: var(--muted); min-height: 32px; display: flex; align-items: center; }
+details.adv[open] summary { margin-bottom: .75rem; }
+.form-foot { text-align: center; font-size: .9rem; color: var(--muted); }
+.form-foot a { color: var(--brand); font-weight: 700; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; z-index: 100;
+  background: var(--text); color: #fff; padding: .85rem 1.25rem; border-radius: 14px; font-weight: 600; font-size: .92rem;
+  display: flex; align-items: center; gap: .6rem; box-shadow: var(--shadow-lg); transition: opacity .25s var(--ease), transform .25s var(--ease);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast svg { color: #86efac; }
+
+/* ---------- Tablette ---------- */
+@container (max-width: 960px) {
+  .hero .wrap { grid-template-columns: 1fr; gap: 2rem; padding-block: 2.5rem; }
+  .hero-visual { min-height: 320px; max-width: 520px; width: 100%; margin-inline: auto; }
+  .trust ul { grid-template-columns: repeat(2, 1fr); }
+  .cats { grid-template-columns: repeat(3, 1fr); }
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .recent { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .catalog { grid-template-columns: 1fr; }
+  .detail { gap: 2rem; }
+  .cart-layout { grid-template-columns: 1fr; }
+  .summary, .gallery, .filters { position: static; }
+  .newsletter { grid-template-columns: 1fr; }
+  .nav-text { display: none; }
+}
+
+/* ---------- Mobile ---------- */
+@container (max-width: 640px) {
+  .wrap { padding-inline: 1rem; }
+  .header .wrap { grid-template-columns: 1fr auto; gap: .5rem 1rem; min-height: 0; padding-block: .6rem; }
+  .header .search { grid-column: 1 / -1; grid-row: 2; max-width: none; }
+  .header-actions .nav-link:not(.cart-btn) { display: none; }
+  .logo { font-size: 1.2rem; }
+  .logo-mark { width: 30px; height: 30px; }
+  .subnav { display: none; }
+  .announce { font-size: .78rem; }
+  .hero h1 { font-size: 2.1rem; }
+  .hero-stats { gap: 1.25rem; }
+  .hero-visual { min-height: 260px; }
+  .float-card { padding: .6rem .8rem; }
+  .trust ul { grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .trust .ico { width: 36px; height: 36px; }
+  .trust span { display: none; }
+  .section { padding-top: 2rem; }
+  .section-head h2 { font-size: 1.3rem; }
+  .cats { display: flex; overflow-x: auto; gap: .6rem; margin-inline: -1rem; padding-inline: 1rem; scrollbar-width: none; }
+  .cat { flex: none; width: 104px; }
+  .promos { grid-template-columns: 1fr; }
+  .grid, .catalog .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+  .card-body { padding: .7rem .75rem .3rem; }
+  .card-title { font-size: .92rem; }
+  .card-foot { padding: .4rem .75rem .75rem; }
+  .price { font-size: 1.02rem; }
+  .cmp { padding: 0 .75rem .6rem; font-size: .78rem; }
+  .recent { display: flex; overflow-x: auto; margin-inline: -1rem; padding-inline: 1rem; scrollbar-width: none; }
+  .recent a { flex: none; width: 128px; }
+  .newsletter { padding: 1.5rem; }
+  .newsletter form { flex-direction: column; }
+  .newsletter input { width: 100%; }
+  .page-title h1 { font-size: 1.6rem; }
+  .desktop-only { display: none !important; }
+  .mobile-only { display: inline-flex; }
+  .toolbar { width: 100%; }
+  .toolbar .select { flex: 1; }
+  .toolbar .select select { width: 100%; }
+  .filters {
+    display: none; position: fixed; z-index: 40; left: 0; right: 0; top: calc(var(--sy, 0px) + var(--vh, 100%) * .16); height: calc(var(--vh, 100%) * .84);
+    overflow-y: auto; border-radius: 24px 24px 0 0; border: 0; padding-bottom: 5rem; box-shadow: var(--shadow-lg); align-content: start;
+  }
+  .filters.open { display: grid; animation: sheet-up .3s var(--ease); }
+  .sheet-backdrop { position: fixed; z-index: 35; left: 0; right: 0; top: var(--sy, 0px); height: var(--vh, 100%); background: rgba(23, 20, 31, .5); }
+  .sheet-backdrop.open { display: block; }
+  .sheet-apply { position: sticky; bottom: 0; margin-top: .5rem; }
+  .compare-bar { bottom: 80px; gap: .6rem; padding-left: .9rem; }
+  .compare-bar span.t { font-size: .8rem; }
+  .detail { grid-template-columns: 1fr; gap: 1.25rem; }
+  .buy h1 { font-size: 1.7rem; }
+  .buy .price-big { font-size: 2rem; }
+  .info-cards { grid-template-columns: 1fr; }
+  .info-card { grid-template-columns: auto 1fr; column-gap: .9rem; align-items: center; }
+  .info-card .ico { grid-row: span 2; }
+  .buy-box { display: none; }
+  .mobile-buybar {
+    display: flex; gap: .6rem; position: sticky; bottom: 70px; z-index: 15; padding: .7rem; margin: 1rem -1rem 0;
+    background: rgba(255,255,255,.96); backdrop-filter: blur(10px); border-top: 1px solid var(--border);
+  }
+  .mobile-buybar .btn { flex: 1; }
+  .line { grid-template-columns: 84px minmax(0, 1fr); }
+  .line .art { width: 84px; height: 84px; }
+  .line-side { grid-column: 1 / -1; grid-template-columns: 1fr auto; align-items: center; justify-items: stretch; }
+  .line-side .line-total { text-align: right; order: 2; }
+  .login { grid-template-columns: 1fr; min-height: 0; }
+  .login-side { padding: 1.75rem 1.25rem; gap: 1rem; }
+  .login-side h2 { font-size: 1.5rem; }
+  .login-side ul { display: none; }
+  .login-main { padding: 1.75rem 1rem 2.5rem; }
+  .login-card h1 { font-size: 1.6rem; }
+  .demo { flex-direction: column; align-items: stretch; }
+  .tabbar {
+    display: grid; grid-template-columns: repeat(5, 1fr); position: sticky; bottom: 0; z-index: 30;
+    background: rgba(255,255,255,.96); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: .25rem .25rem calc(.25rem + 8px);
+  }
+  .tabbar button {
+    position: relative; display: grid; justify-items: center; gap: 2px; min-height: 56px; padding: .35rem 0; border: 0; background: none;
+    font-size: .7rem; font-weight: 700; color: var(--muted); border-radius: 12px;
+  }
+  .tabbar button[aria-current="page"] { color: var(--brand); }
+  .tabbar .count { position: absolute; top: 4px; left: calc(50% + 6px); min-width: 18px; height: 18px; border-radius: 999px; background: var(--brand); color: #fff; font-size: .68rem; display: grid; place-items: center; padding: 0 4px; }
+  .footer .wrap { padding-block: 1.25rem; justify-content: center; text-align: center; }
+  .toast { bottom: 90px; }
+}
+
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Icônes -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-compare" viewBox="0 0 24 24"><path d="M8 3 4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8zM7 7h.01"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+
+    <symbol id="g-beauty" viewBox="0 0 48 48"><path d="M18 4h12v8H18zM15 12h18l2 8v22a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V20z"/><path d="M13 26h22"/></symbol>
+    <symbol id="g-fragrance" viewBox="0 0 48 48"><path d="M19 5h10v6H19zM21 11v4M27 11v4"/><rect x="11" y="15" width="26" height="28" rx="6"/><circle cx="24" cy="29" r="5"/></symbol>
+    <symbol id="g-furniture" viewBox="0 0 48 48"><path d="M9 21v-5a6 6 0 0 1 6-6h18a6 6 0 0 1 6 6v5"/><path d="M5 27a4 4 0 0 1 8 0v3h22v-3a4 4 0 0 1 8 0v10H5z"/><path d="M10 37v5M38 37v5"/></symbol>
+    <symbol id="g-laptops" viewBox="0 0 48 48"><rect x="8" y="9" width="32" height="24" rx="3"/><path d="M3 39h42M20 39l1 -2h6l1 2"/></symbol>
+    <symbol id="g-fashion" viewBox="0 0 48 48"><path d="m17 6-12 7 4 9 6-2v22h18V20l6 2 4-9-12-7a7 7 0 0 1-14 0z"/></symbol>
+    <symbol id="g-audio" viewBox="0 0 48 48"><path d="M8 28v-4a16 16 0 0 1 32 0v4"/><rect x="6" y="28" width="9" height="14" rx="3"/><rect x="33" y="28" width="9" height="14" rx="3"/></symbol>
+  </defs>
+</svg>
+
+<div class="stage-bar">
+  <h1>ChampaShop <small>Maquettes v2 · cliquables</small></h1>
+  <div class="stage-tabs" role="tablist" aria-label="Écrans">
+    <button role="tab" data-go="home" aria-selected="true">Accueil</button>
+    <button role="tab" data-go="catalog" aria-selected="false">Catalogue</button>
+    <button role="tab" data-go="product" aria-selected="false">Fiche produit</button>
+    <button role="tab" data-go="cart" aria-selected="false">Panier</button>
+    <button role="tab" data-go="login" aria-selected="false">Connexion</button>
+  </div>
+  <div class="stage-device" role="group" aria-label="Appareil">
+    <button id="dev-desktop" aria-pressed="true">Bureau</button>
+    <button id="dev-mobile" aria-pressed="false">Mobile</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="device" id="device">
+    <div class="viewport" id="viewport">
+
+      <div class="announce">Livraison offerte dès <b>80 €</b> d’achat · Retours simples</div>
+
+      <header class="header">
+        <div class="wrap">
+          <a href="#" class="logo" data-go="home" aria-label="ChampaShop, accueil">
+            <span class="logo-mark"><svg class="i" aria-hidden="true"><use href="#i-bolt"/></svg></span>
+            <span>Champa<b>Shop</b></span>
+          </a>
+          <form class="search" role="search" onsubmit="event.preventDefault(); go('catalog')">
+            <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+            <label class="sr-only" for="q-global">Rechercher un produit</label>
+            <input id="q-global" type="search" placeholder="Rechercher un produit, une catégorie…">
+          </form>
+          <div class="header-actions">
+            <button class="nav-link" data-go="catalog" data-nav="catalog"><svg class="i" aria-hidden="true"><use href="#i-grid"/></svg><span class="nav-text">Catalogue</span></button>
+            <button class="nav-link" data-go="login" data-nav="login"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg><span class="nav-text">Connexion</span></button>
+            <button class="nav-link cart-btn" data-go="cart" data-nav="cart" aria-label="Panier, 5 articles"><svg class="i" aria-hidden="true"><use href="#i-cart"/></svg><span class="count" aria-hidden="true" id="cart-count">5</span></button>
+          </div>
+        </div>
+        <nav class="subnav" aria-label="Catégories populaires">
+          <div class="wrap">
+            <a href="#" data-go="catalog">Beauté</a><a href="#" data-go="catalog">Parfums</a><a href="#" data-go="catalog">Meubles</a>
+            <a href="#" data-go="catalog">Ordinateurs</a><a href="#" data-go="catalog">Mode</a><a href="#" data-go="catalog">Audio</a>
+            <a href="#" data-go="catalog" class="hot">Promotions −10 %</a>
+          </div>
+        </nav>
+      </header>
+
+      <!-- ============ ACCUEIL ============ -->
+      <main class="screen" id="s-home">
+        <section class="hero">
+          <div class="wrap">
+            <div>
+              <span class="badge violet"><svg class="i sm" aria-hidden="true"><use href="#i-tag"/></svg> Remise beauté automatique dès 3 articles</span>
+              <h1>Trouvez le bon produit, <em>sans chercher</em>.</h1>
+              <p class="lead">Plus de 190 produits, des filtres clairs et un panier qui calcule vos remises en direct. Rapide, lisible, sur tous vos écrans.</p>
+              <div class="hero-cta">
+                <button class="btn btn-primary btn-lg" data-go="catalog">Découvrir le catalogue <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                <button class="btn btn-ghost btn-lg" data-go="catalog">Voir les promos</button>
+              </div>
+              <div class="hero-stats">
+                <div><strong>194</strong><span>produits</span></div>
+                <div><strong>4,6/5</strong><span>note moyenne</span></div>
+                <div><strong>80 €</strong><span>livraison offerte</span></div>
+              </div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+              <div class="art beauty a1"><svg class="glyph"><use href="#g-beauty"/></svg></div>
+              <div class="art furniture a2"><svg class="glyph"><use href="#g-furniture"/></svg></div>
+              <div class="art laptops a3"><svg class="glyph"><use href="#g-laptops"/></svg></div>
+              <div class="float-card">
+                <span class="ico"><svg class="i"><use href="#i-truck"/></svg></span>
+                <div><strong>Livraison offerte</strong><span>dès 80 € d’achat</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="trust" aria-label="Nos engagements">
+          <ul class="wrap">
+            <li><span class="ico"><svg class="i"><use href="#i-truck"/></svg></span><div><strong>Livraison offerte</strong><span>dès 80 € d’achat</span></div></li>
+            <li><span class="ico"><svg class="i"><use href="#i-rotate"/></svg></span><div><strong>Retours simples</strong><span>selon le produit</span></div></li>
+            <li><span class="ico"><svg class="i"><use href="#i-shield"/></svg></span><div><strong>Paiement sécurisé</strong><span>données protégées</span></div></li>
+            <li><span class="ico"><svg class="i"><use href="#i-tag"/></svg></span><div><strong>Remises claires</strong><span>calculées en direct</span></div></li>
+          </ul>
+        </section>
+
+        <div class="wrap">
+          <section class="section" aria-labelledby="h-cats">
+            <div class="section-head"><div><h2 id="h-cats">Acheter par catégorie</h2></div><a class="link-more" href="#" data-go="catalog">Tout voir <svg class="i sm" aria-hidden="true"><use href="#i-chev-r"/></svg></a></div>
+            <div class="cats">
+              <button class="cat" data-go="catalog"><span class="disc art beauty"><svg class="i"><use href="#g-beauty"/></svg></span>Beauté<small>35 produits</small></button>
+              <button class="cat" data-go="catalog"><span class="disc art fragrance"><svg class="i"><use href="#g-fragrance"/></svg></span>Parfums<small>27 produits</small></button>
+              <button class="cat" data-go="catalog"><span class="disc art furniture"><svg class="i"><use href="#g-furniture"/></svg></span>Meubles<small>30 produits</small></button>
+              <button class="cat" data-go="catalog"><span class="disc art laptops"><svg class="i"><use href="#g-laptops"/></svg></span>Ordinateurs<small>6 produits</small></button>
+              <button class="cat" data-go="catalog"><span class="disc art fashion"><svg class="i"><use href="#g-fashion"/></svg></span>Mode<small>42 produits</small></button>
+              <button class="cat" data-go="catalog"><span class="disc art audio"><svg class="i"><use href="#g-audio"/></svg></span>Audio<small>14 produits</small></button>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="h-promos">
+            <div class="section-head"><div><h2 id="h-promos">Les bons plans du moment</h2><p>Cliquez sur un code pour le copier, il s’applique ensuite dans le panier.</p></div></div>
+            <div class="promos">
+              <article class="promo p1">
+                <div><h3>−10 % sur la beauté dès 3 articles</h3><p>Automatique, aucun code à saisir. Cumulable avec TROYES10.</p></div>
+                <button class="btn" style="background:#fff;color:#4c1d95;align-self:start;position:relative;z-index:1" data-go="catalog">Voir la beauté <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+              </article>
+              <article class="promo p2">
+                <div><h3>−10 € dès 50 € d’achat</h3><p>Valable sur le sous-total après remise beauté.</p></div>
+                <button class="code" data-copy="TROYES10" aria-label="Copier le code TROYES10"><svg class="i sm" aria-hidden="true"><use href="#i-copy"/></svg>TROYES10 <small>· copier</small></button>
+              </article>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="h-pop">
+            <div class="section-head"><div><h2 id="h-pop">Les plus populaires</h2><p>Les produits les mieux notés cette semaine.</p></div><a class="link-more" href="#" data-go="catalog">Tout le catalogue <svg class="i sm" aria-hidden="true"><use href="#i-chev-r"/></svg></a></div>
+            <div class="grid" id="grid-home"></div>
+          </section>
+
+          <section class="section" aria-labelledby="h-recent">
+            <div class="section-head"><div><h2 id="h-recent">Vus récemment</h2></div><button class="btn-text" type="button">Effacer l’historique</button></div>
+            <div class="recent" id="recent-home"></div>
+          </section>
+
+          <section class="newsletter" aria-labelledby="h-news">
+            <div><h2 id="h-news">Les nouveautés dans votre boîte</h2><p>Un e-mail par semaine, pas plus. Désinscription en un clic.</p></div>
+            <form onsubmit="event.preventDefault(); toast('Merci, vous êtes inscrit·e')">
+              <label class="sr-only" for="nl">Adresse e-mail</label>
+              <input id="nl" type="email" placeholder="vous@exemple.fr" required>
+              <button class="btn btn-primary" type="submit">S’inscrire</button>
+            </form>
+          </section>
+        </div>
+      </main>
+
+      <!-- ============ CATALOGUE ============ -->
+      <main class="screen" id="s-catalog" hidden>
+        <div class="wrap">
+          <nav class="crumbs" aria-label="Fil d’Ariane"><a href="#" data-go="home">Accueil</a><svg class="i sm" aria-hidden="true"><use href="#i-chev-r"/></svg><span aria-current="page">Catalogue</span></nav>
+          <div class="page-title">
+            <div><h1>Catalogue</h1><p aria-live="polite">35 produits · catégorie Beauté</p></div>
+            <div class="toolbar">
+              <button class="btn btn-ghost mobile-only" type="button" id="open-filters" aria-controls="filters" aria-expanded="false"><svg class="i" aria-hidden="true"><use href="#i-sliders"/></svg>Filtres <span class="badge violet">2</span></button>
+              <div class="select">
+                <label class="sr-only" for="sort">Trier par</label>
+                <select id="sort"><option>Pertinence</option><option>Prix croissant</option><option>Prix décroissant</option><option>Mieux notés</option><option>Plus grosse remise</option></select>
+                <svg class="i sm" aria-hidden="true"><use href="#i-chev-d"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="cat-pills desktop-only-pills" role="group" aria-label="Catégories">
+            <button class="chip" aria-pressed="false">Toutes</button>
+            <button class="chip" aria-pressed="true">Beauté</button>
+            <button class="chip" aria-pressed="false">Parfums</button>
+            <button class="chip" aria-pressed="false">Meubles</button>
+            <button class="chip" aria-pressed="false">Ordinateurs</button>
+            <button class="chip" aria-pressed="false">Mode</button>
+            <button class="chip" aria-pressed="false">Audio</button>
+          </div>
+
+          <div class="catalog">
+            <div class="sheet-backdrop" id="sheet-backdrop"></div>
+            <aside class="filters" id="filters" aria-label="Filtres du catalogue">
+              <h2>Filtres <button class="icon-btn sheet-close" type="button" id="close-filters" aria-label="Fermer les filtres"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button></h2>
+              <div class="filter-group">
+                <h3>Prix</h3>
+                <div class="range" aria-hidden="true"><span class="track"></span><span class="fill"></span><span class="thumb" style="left:calc(8% - 10px)"></span><span class="thumb" style="left:calc(62% - 10px)"></span></div>
+                <div class="price-fields">
+                  <label><span class="sr-only">Prix minimum</span><input type="number" value="10" aria-label="Prix minimum en euros"><span>€</span></label>
+                  <span aria-hidden="true">–</span>
+                  <label><span class="sr-only">Prix maximum</span><input type="number" value="80" aria-label="Prix maximum en euros"><span>€</span></label>
+                </div>
+              </div>
+              <div class="filter-group">
+                <h3>Catégorie</h3>
+                <div>
+                  <button class="opt" aria-pressed="false">Toutes <em>194</em></button>
+                  <button class="opt" aria-pressed="true">Beauté <em>35</em></button>
+                  <button class="opt" aria-pressed="false">Parfums <em>27</em></button>
+                  <button class="opt" aria-pressed="false">Meubles <em>30</em></button>
+                  <button class="opt" aria-pressed="false">Ordinateurs <em>6</em></button>
+                </div>
+                <button class="btn-text" style="justify-self:start">+ 12 autres catégories</button>
+              </div>
+              <button class="btn btn-primary btn-block sheet-apply mobile-only" type="button" id="apply-filters">Voir les 35 produits</button>
+            </aside>
+
+            <div>
+              <div class="active-row" aria-label="Filtres actifs">
+                <span class="chip removable">Beauté <button class="icon-btn" style="width:28px;height:28px;color:inherit" aria-label="Retirer le filtre Beauté"><svg class="i sm" aria-hidden="true"><use href="#i-x"/></svg></button></span>
+                <span class="chip removable">10 € – 80 € <button class="icon-btn" style="width:28px;height:28px;color:inherit" aria-label="Retirer le filtre de prix"><svg class="i sm" aria-hidden="true"><use href="#i-x"/></svg></button></span>
+                <button class="btn-text">Tout effacer</button>
+              </div>
+              <div class="grid" id="grid-catalog"></div>
+              <nav class="pagination" aria-label="Pagination">
+                <button aria-label="Page précédente"><svg class="i" aria-hidden="true"><use href="#i-chev-l"/></svg></button>
+                <button aria-current="page">1</button><button>2</button><button>3</button>
+                <button aria-label="Page suivante"><svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="compare-bar" role="region" aria-label="Comparateur">
+          <div class="thumbs" aria-hidden="true">
+            <span class="art beauty"><svg class="glyph"><use href="#g-beauty"/></svg></span>
+            <span class="art fragrance"><svg class="glyph"><use href="#g-fragrance"/></svg></span>
+          </div>
+          <span class="t"><b>2</b> / 3 produits</span>
+          <button class="clear" type="button">Vider</button>
+          <button class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-compare"/></svg>Comparer</button>
+        </div>
+      </main>
+
+      <!-- ============ FICHE PRODUIT ============ -->
+      <main class="screen" id="s-product" hidden>
+        <div class="wrap">
+          <nav class="crumbs" aria-label="Fil d’Ariane"><a href="#" data-go="home">Accueil</a><svg class="i sm" aria-hidden="true"><use href="#i-chev-r"/></svg><a href="#" data-go="catalog">Catalogue</a><svg class="i sm" aria-hidden="true"><use href="#i-chev-r"/></svg><span aria-current="page">Mascara Lash Princess</span></nav>
+          <article class="detail">
+            <div class="gallery">
+              <div class="art beauty main"><svg class="glyph"><use href="#g-beauty"/></svg></div>
+              <ul class="thumbs" aria-label="Images du produit">
+                <li><button aria-pressed="true" aria-label="Image 1"><span class="art beauty"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+                <li><button aria-pressed="false" aria-label="Image 2"><span class="art fragrance"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+                <li><button aria-pressed="false" aria-label="Image 3"><span class="art furniture"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+                <li><button aria-pressed="false" aria-label="Image 4"><span class="art audio"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+                <li><button aria-pressed="false" aria-label="Image 5"><span class="art fashion"><svg class="glyph"><use href="#g-beauty"/></svg></span></button></li>
+              </ul>
+            </div>
+
+            <div class="buy">
+              <span class="eyebrow">Beauté · Essence</span>
+              <h1>Mascara Lash Princess</h1>
+              <div class="meta">
+                <span class="stars"><svg class="i fill" aria-hidden="true"><use href="#i-star"/></svg>4,3 <span>sur 5</span></span>
+                <span class="badge">−10 %</span>
+              </div>
+              <div class="price-row"><span class="price-big">9,99 €</span><s>11,10 €</s></div>
+              <p class="desc">Un mascara populaire pour des cils plus longs et plus volumineux. Formule longue tenue, non testée sur les animaux.</p>
+              <p class="stock low" aria-live="polite">Plus que 4 en stock</p>
+
+              <div class="buy-box">
+                <div class="buy-row">
+                  <div class="qty" role="group" aria-label="Quantité">
+                    <button type="button" aria-label="Diminuer la quantité" data-qty="-1"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button>
+                    <output id="qty-val">1</output>
+                    <button type="button" aria-label="Augmenter la quantité" data-qty="1"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button>
+                  </div>
+                  <button class="btn btn-primary btn-lg" type="button" data-addcart><svg class="i" aria-hidden="true"><use href="#i-cart"/></svg>Ajouter au panier</button>
+                </div>
+                <button class="btn btn-ghost btn-block" type="button" data-compare-toggle aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-compare"/></svg>Ajouter au comparateur</button>
+              </div>
+
+              <div class="info-cards">
+                <div class="info-card"><span class="ico"><svg class="i"><use href="#i-shield"/></svg></span><strong>Garantie</strong><span>1 semaine de garantie</span></div>
+                <div class="info-card"><span class="ico"><svg class="i"><use href="#i-truck"/></svg></span><strong>Livraison</strong><span>Expédié sous 1 mois</span></div>
+                <div class="info-card"><span class="ico"><svg class="i"><use href="#i-rotate"/></svg></span><strong>Retours</strong><span>Retour sous 30 jours</span></div>
+              </div>
+              <div class="tags"><span>beauté</span><span>mascara</span><span>cils</span></div>
+            </div>
+          </article>
+
+          <section class="section" aria-labelledby="h-rec2">
+            <div class="section-head"><div><h2 id="h-rec2">Vous aimerez aussi</h2></div></div>
+            <div class="grid" id="grid-product"></div>
+          </section>
+
+          <div class="mobile-buybar">
+            <button class="btn btn-ghost" style="flex:none;width:52px;padding:0" aria-label="Ajouter au comparateur"><svg class="i" aria-hidden="true"><use href="#i-compare"/></svg></button>
+            <button class="btn btn-primary btn-lg" type="button" data-addcart><svg class="i" aria-hidden="true"><use href="#i-cart"/></svg>Ajouter · 9,99 €</button>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============ PANIER ============ -->
+      <main class="screen" id="s-cart" hidden>
+        <div class="wrap">
+          <nav class="crumbs" aria-label="Fil d’Ariane"><a href="#" data-go="catalog">← Continuer mes achats</a></nav>
+          <div class="page-title"><h1>Votre panier <span style="font-size:1rem;color:var(--muted);font-family:var(--font-body);font-weight:600">5 articles</span></h1></div>
+          <ol class="stepper" aria-label="Étapes de commande" style="list-style:none;padding:0;margin-top:0">
+            <li class="step current" aria-current="step"><i>1</i>Panier</li><span class="step-line"></span>
+            <li class="step"><i>2</i>Connexion</li><span class="step-line"></span>
+            <li class="step"><i>3</i>Confirmation</li>
+          </ol>
+
+          <div class="cart-layout">
+            <div>
+              <div class="ship-progress">
+                <p><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Livraison offerte, vous avez dépassé 80 €</p>
+                <div class="bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Progression vers la livraison offerte"><i></i></div>
+              </div>
+              <ul class="lines">
+                <li class="line">
+                  <span class="art beauty"><svg class="glyph"><use href="#g-beauty"/></svg></span>
+                  <div><h3>Mascara Lash Princess</h3><p class="sub">Beauté · 9,99 € / unité</p><span class="badge green" style="margin-top:.4rem">−10 % beauté appliqué</span></div>
+                  <div class="line-side">
+                    <p class="line-total">29,97 €</p>
+                    <div class="line-ctrls">
+                      <div class="qty" role="group" aria-label="Quantité Mascara"><button aria-label="Diminuer"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button><output>3</output><button aria-label="Augmenter"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button></div>
+                      <button class="icon-btn" aria-label="Retirer Mascara Lash Princess du panier"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button>
+                    </div>
+                  </div>
+                </li>
+                <li class="line">
+                  <span class="art beauty"><svg class="glyph"><use href="#g-beauty"/></svg></span>
+                  <div><h3>Palette de fards à paupières</h3><p class="sub">Beauté · 19,99 € / unité</p><span class="badge green" style="margin-top:.4rem">−10 % beauté appliqué</span></div>
+                  <div class="line-side">
+                    <p class="line-total">19,99 €</p>
+                    <div class="line-ctrls">
+                      <div class="qty" role="group" aria-label="Quantité Palette"><button aria-label="Diminuer"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button><output>1</output><button aria-label="Augmenter"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button></div>
+                      <button class="icon-btn" aria-label="Retirer la palette du panier"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button>
+                    </div>
+                  </div>
+                </li>
+                <li class="line">
+                  <span class="art fragrance"><svg class="glyph"><use href="#g-fragrance"/></svg></span>
+                  <div><h3>Gucci Bloom Eau de Parfum</h3><p class="sub">Parfums · 79,99 € / unité</p></div>
+                  <div class="line-side">
+                    <p class="line-total">79,99 €</p>
+                    <div class="line-ctrls">
+                      <div class="qty" role="group" aria-label="Quantité Gucci Bloom"><button aria-label="Diminuer"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button><output>1</output><button aria-label="Augmenter"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button></div>
+                      <button class="icon-btn" aria-label="Retirer Gucci Bloom du panier"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <aside class="summary" aria-label="Résumé de la commande">
+              <h2>Résumé</h2>
+              <form class="promo-form" onsubmit="event.preventDefault(); toast('Code TROYES10 appliqué')">
+                <label for="promo">Code promo</label>
+                <div class="row"><input id="promo" type="text" value="TROYES10" autocomplete="off"><button class="btn btn-ghost" type="submit">Appliquer</button></div>
+                <div class="applied"><span class="badge green"><svg class="i sm" aria-hidden="true"><use href="#i-check"/></svg>TROYES10 appliqué</span></div>
+              </form>
+              <dl class="totals">
+                <div><dt>Sous-total</dt><dd>129,95 €</dd></div>
+                <div class="disc"><dt>Remise beauté (−10 %)</dt><dd>−5,00 €</dd></div>
+                <div class="disc"><dt>Code TROYES10</dt><dd>−10,00 €</dd></div>
+                <div><dt>Livraison</dt><dd style="color:var(--success)">Offerte</dd></div>
+                <div class="grand"><dt>Total</dt><dd>114,95 €</dd></div>
+              </dl>
+              <div class="login-hint"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg><span>Connectez-vous pour valider votre commande. Votre panier est conservé.</span></div>
+              <button class="btn btn-primary btn-lg btn-block" type="button" data-go="login">Se connecter pour commander <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+              <p class="safe"><svg class="i sm" aria-hidden="true"><use href="#i-shield"/></svg>Paiement sécurisé</p>
+              <button class="link-clear" type="button">Vider le panier</button>
+            </aside>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============ CONNEXION ============ -->
+      <main class="screen" id="s-login" hidden>
+        <div class="login">
+          <section class="login-side" aria-hidden="false">
+            <a href="#" class="logo" data-go="home" style="color:#fff"><span class="logo-mark" style="background:rgba(255,255,255,.2)"><svg class="i" aria-hidden="true"><use href="#i-bolt"/></svg></span>ChampaShop</a>
+            <h2>Content de vous revoir.</h2>
+            <ul>
+              <li><span class="ico"><svg class="i"><use href="#i-cart"/></svg></span>Retrouvez votre panier sur tous vos appareils</li>
+              <li><span class="ico"><svg class="i"><use href="#i-compare"/></svg></span>Gardez vos comparaisons et produits vus</li>
+              <li><span class="ico"><svg class="i"><use href="#i-shield"/></svg></span>Commandez en toute sécurité</li>
+            </ul>
+          </section>
+          <section class="login-main">
+            <div class="login-card">
+              <div><h1>Connexion</h1><p class="sub">Entrez vos identifiants pour continuer.</p></div>
+              <div class="demo">
+                <div><strong>Compte de démonstration</strong><code>emilys / emilyspass</code></div>
+                <button class="btn" type="button" id="fill-demo">Remplir</button>
+              </div>
+              <form class="form" novalidate onsubmit="event.preventDefault(); validateLogin()">
+                <div class="field" id="f-user">
+                  <label for="username">Identifiant</label>
+                  <div class="ctl"><input id="username" name="username" type="text" autocomplete="username" required aria-describedby="e-user"></div>
+                  <p class="err" id="e-user" role="alert"><svg class="i sm" aria-hidden="true"><use href="#i-alert"/></svg>Saisissez votre identifiant.</p>
+                </div>
+                <div class="field" id="f-pass">
+                  <label for="password">Mot de passe</label>
+                  <div class="ctl">
+                    <input id="password" name="password" type="password" autocomplete="current-password" required aria-describedby="e-pass" style="padding-right:3.2rem">
+                    <button class="toggle" type="button" id="toggle-pass" aria-label="Afficher le mot de passe" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-eye"/></svg></button>
+                  </div>
+                  <p class="err" id="e-pass" role="alert"><svg class="i sm" aria-hidden="true"><use href="#i-alert"/></svg>Saisissez votre mot de passe.</p>
+                </div>
+                <details class="adv">
+                  <summary>Options avancées</summary>
+                  <div class="field"><label for="exp">Expiration du token (minutes)</label><input id="exp" type="number" min="1" value="60"><span class="help">Durée de validité de votre session.</span></div>
+                </details>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Se connecter</button>
+              </form>
+              <p class="form-foot">Pas encore de compte ? <a href="#">Créer un compte</a></p>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <div class="wrap">
+          <span>© ChampaShop · Projet WR505</span>
+          <nav aria-label="Pied de page"><a href="#">Mentions légales</a><a href="#">Contact</a><a href="#">Livraison &amp; retours</a></nav>
+        </div>
+      </footer>
+
+      <nav class="tabbar" aria-label="Navigation principale">
+        <button data-go="home" data-nav="home" aria-current="page"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg>Accueil</button>
+        <button data-go="catalog" data-nav="catalog"><svg class="i" aria-hidden="true"><use href="#i-grid"/></svg>Catalogue</button>
+        <button data-go="catalog"><svg class="i" aria-hidden="true"><use href="#i-compare"/></svg>Comparer<span class="count">2</span></button>
+        <button data-go="cart" data-nav="cart"><svg class="i" aria-hidden="true"><use href="#i-cart"/></svg>Panier<span class="count">5</span></button>
+        <button data-go="login" data-nav="login"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>Compte</button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<section class="notes" aria-labelledby="h-notes">
+  <h2 id="h-notes">Ce qui change par rapport au site actuel</h2>
+  <ul>
+    <li><b>Navigation :</b> recherche toujours visible dans l’en-tête, menu de catégories, et barre d’onglets en bas sur mobile (5 entrées) pour joindre le panier au pouce.</li>
+    <li><b>Accueil :</b> on passe d’un bloc de texte à une vraie page de vente : catégories, bons plans (codes copiables), produits populaires, vus récemment.</li>
+    <li><b>Catalogue :</b> catégories en pastilles au-dessus, filtres en panneau latéral (bureau) ou en tiroir (mobile), filtres actifs retirables un par un, barre de comparaison flottante.</li>
+    <li><b>Fiche produit :</b> prix, stock et bouton d’achat visibles sans défiler, informations garantie/livraison/retours en cartes, barre d’achat collée en bas sur mobile.</li>
+    <li><b>Panier :</b> étapes visibles, barre de livraison offerte, remises détaillées ligne par ligne, résumé collant.</li>
+    <li><b>Connexion :</b> bouton « Remplir » pour le compte de démo, œil pour afficher le mot de passe, erreurs sous chaque champ (testez en envoyant le formulaire vide).</li>
+    <li><b>Accessibilité :</b> contrastes ≥ 4,5:1, cibles tactiles ≥ 44 px, focus visible, libellés visibles, mouvement réduit respecté, aucune icône emoji.</li>
+    <li><b>Charte conservée :</b> violet de la marque, orange pour les promotions. Typographies Rubik (titres) et Nunito Sans (texte). Les visuels produits sont des pastilles de remplacement : en production, ce sont les images DummyJSON.</li>
+  </ul>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span id="toast-text"></span></div>
+
+<script>
+const products = [
+  { id: 1, cat: 'beauty', label: 'Beauté', title: 'Mascara Lash Princess', price: '9,99 €', old: '11,10 €', disc: '−10 %', rating: '4,3' },
+  { id: 2, cat: 'beauty', label: 'Beauté', title: 'Palette de fards à paupières', price: '19,99 €', old: '', disc: '', rating: '3,3' },
+  { id: 3, cat: 'fragrance', label: 'Parfums', title: 'Gucci Bloom Eau de Parfum', price: '79,99 €', old: '88,88 €', disc: '−10 %', rating: '4,7' },
+  { id: 4, cat: 'laptops', label: 'Ordinateurs', title: 'MacBook Pro 14 pouces', price: '1 999 €', old: '', disc: '', rating: '4,6' },
+  { id: 5, cat: 'furniture', label: 'Meubles', title: 'Lit Annibale Colombo', price: '1 899 €', old: '2 110 €', disc: '−10 %', rating: '4,1' },
+  { id: 6, cat: 'fashion', label: 'Mode', title: 'Chemise en lin à manches courtes', price: '24,99 €', old: '', disc: '', rating: '4,4' },
+  { id: 7, cat: 'audio', label: 'Audio', title: 'Casque sans fil réduction de bruit', price: '129 €', old: '149 €', disc: '−13 %', rating: '4,8' },
+  { id: 8, cat: 'beauty', label: 'Beauté', title: 'Rouge à lèvres rouge intense', price: '12,99 €', old: '', disc: '', rating: '4,0' }
+];
+const cartIcon = '<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>';
+const art = (p, extra = '') => `<div class="art ${p.cat} ${extra}" aria-hidden="true"><svg class="glyph"><use href="#g-${p.cat === 'beauty' ? 'beauty' : p.cat}"/></svg></div>`;
+const card = (p) => `
+  <article class="card">
+    ${p.disc ? `<span class="badge tag">${p.disc}</span>` : ''}
+    ${art(p)}
+    <div class="card-body">
+      <p class="card-cat">${p.label}</p>
+      <h3 class="card-title"><a href="#" data-go="product">${p.title}</a></h3>
+      <span class="stars"><svg class="i fill" aria-hidden="true"><use href="#i-star"/></svg>${p.rating}</span>
+    </div>
+    <div class="card-foot">
+      <span class="price">${p.price}${p.old ? `<s>${p.old}</s>` : ''}</span>
+      <button class="add-btn" type="button" aria-label="Ajouter ${p.title} au panier" data-add>${cartIcon}</button>
+    </div>
+    <label class="cmp"><input type="checkbox"> Comparer</label>
+  </article>`;
+const recent = (p) => `<a href="#" data-go="product">${art(p)}<b>${p.title}</b><span>${p.price}</span></a>`;
+
+const fill = (id, list, fn) => { document.getElementById(id).innerHTML = list.map(fn).join(''); };
+fill('grid-home', products.slice(0, 4), card);
+fill('grid-catalog', [products[0], products[1], products[7], products[2], products[0], products[1]], card);
+fill('grid-product', products.slice(1, 5), card);
+fill('recent-home', [products[3], products[0], products[4], products[5], products[6], products[2]], recent);
+
+/* Navigation entre écrans */
+const screens = ['home', 'catalog', 'product', 'cart', 'login'];
+const viewport = document.getElementById('viewport');
+function go(name) {
+  screens.forEach((s) => { document.getElementById('s-' + s).hidden = s !== name; });
+  document.querySelectorAll('.stage-tabs [role=tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.go === name)));
+  document.querySelectorAll('[data-nav]').forEach((b) => {
+    if (b.dataset.nav === name) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  closeSheet();
+  viewport.scrollTo({ top: 0, behavior: 'auto' });
+}
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-go]');
+  if (t) { e.preventDefault(); go(t.dataset.go); }
+});
+
+/* Bureau / mobile */
+const device = document.getElementById('device');
+function setDevice(mobile) {
+  device.classList.toggle('mobile', mobile);
+  document.getElementById('dev-mobile').setAttribute('aria-pressed', String(mobile));
+  document.getElementById('dev-desktop').setAttribute('aria-pressed', String(!mobile));
+}
+document.getElementById('dev-desktop').onclick = () => setDevice(false);
+document.getElementById('dev-mobile').onclick = () => setDevice(true);
+
+/* Toast */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* Ajout au panier depuis une carte */
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-add]');
+  if (!b) return;
+  e.preventDefault();
+  b.classList.add('done');
+  b.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>';
+  toast('Ajouté au panier');
+  setTimeout(() => { b.classList.remove('done'); b.innerHTML = cartIcon; }, 1600);
+});
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-addcart]');
+  if (!b) return;
+  toast('Ajouté au panier');
+});
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-compare-toggle]');
+  if (!b) return;
+  const on = b.getAttribute('aria-pressed') !== 'true';
+  b.setAttribute('aria-pressed', String(on));
+  b.lastChild.textContent = on ? 'Retirer du comparateur' : 'Ajouter au comparateur';
+  b.classList.toggle('btn-primary', on);
+  b.classList.toggle('btn-ghost', !on);
+  toast(on ? 'Ajouté au comparateur (3 / 3)' : 'Retiré du comparateur');
+});
+
+/* Copie de code promo */
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-copy]');
+  if (!b) return;
+  try { navigator.clipboard.writeText(b.dataset.copy); } catch (_) { /* copie indisponible : le toast suffit pour la maquette */ }
+  toast('Code ' + b.dataset.copy + ' copié');
+});
+
+/* Quantité (fiche produit) */
+let qty = 1;
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-qty]');
+  if (!b) return;
+  qty = Math.min(4, Math.max(1, qty + Number(b.dataset.qty)));
+  document.getElementById('qty-val').textContent = qty;
+  if (qty === 4 && Number(b.dataset.qty) > 0) toast('Stock maximum atteint');
+});
+
+/* Vignettes de la galerie */
+document.querySelectorAll('.gallery .thumbs button').forEach((b) => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.gallery .thumbs button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    const src = b.querySelector('.art');
+    const main = document.querySelector('.gallery .main');
+    main.className = src.className.replace('art', 'art') + ' main';
+  });
+});
+
+/* Tiroir de filtres (mobile) */
+const filters = document.getElementById('filters');
+const backdrop = document.getElementById('sheet-backdrop');
+const openBtn = document.getElementById('open-filters');
+function closeSheet() {
+  filters.classList.remove('open'); backdrop.classList.remove('open'); openBtn.setAttribute('aria-expanded', 'false');
+  viewport.style.overflowY = '';
+}
+openBtn.onclick = () => {
+  viewport.style.setProperty('--sy', viewport.scrollTop + 'px');
+  viewport.style.setProperty('--vh', viewport.clientHeight + 'px');
+  viewport.style.overflowY = 'hidden';
+  filters.classList.add('open'); backdrop.classList.add('open'); openBtn.setAttribute('aria-expanded', 'true');
+  document.getElementById('close-filters').focus();
+};
+document.getElementById('close-filters').onclick = closeSheet;
+document.getElementById('apply-filters').onclick = closeSheet;
+backdrop.onclick = closeSheet;
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheet(); });
+
+/* Pastilles de catégories */
+document.querySelectorAll('.cat-pills .chip').forEach((c) => c.addEventListener('click', () => {
+  document.querySelectorAll('.cat-pills .chip').forEach((o) => o.setAttribute('aria-pressed', String(o === c)));
+}));
+
+/* Connexion */
+document.getElementById('fill-demo').onclick = () => {
+  document.getElementById('username').value = 'emilys';
+  document.getElementById('password').value = 'emilyspass';
+  ['f-user', 'f-pass'].forEach((id) => document.getElementById(id).classList.remove('error'));
+  toast('Compte de démonstration rempli');
+};
+document.getElementById('toggle-pass').onclick = (e) => {
+  const input = document.getElementById('password');
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  e.currentTarget.setAttribute('aria-pressed', String(show));
+  e.currentTarget.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+};
+function validateLogin() {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value;
+  document.getElementById('f-user').classList.toggle('error', !u);
+  document.getElementById('f-pass').classList.toggle('error', !p);
+  document.getElementById('username').setAttribute('aria-invalid', String(!u));
+  document.getElementById('password').setAttribute('aria-invalid', String(!p));
+  if (u && p) toast('Connexion réussie');
+  else (u ? document.getElementById('password') : document.getElementById('username')).focus();
+}
+/* Ouverture directe : index.html#cart?mobile */
+const [startScreen, startOpts = ''] = location.hash.slice(1).split('?');
+if (screens.includes(startScreen)) go(startScreen);
+if (startOpts.includes('mobile')) setDevice(true);
+if (location.href.includes('full')) { document.body.classList.add('full'); }
+
+</script>
+</body>
+</html>
