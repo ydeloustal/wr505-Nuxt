@@ -90,7 +90,15 @@ const addToCart = () => {
 
 <template>
   <main class="product-detail-page">
-    <NuxtLink to="/produits" class="back-link">← Retour au catalogue</NuxtLink>
+    <nav class="crumbs" aria-label="Fil d’Ariane">
+      <NuxtLink to="/">Accueil</NuxtLink>
+      <span aria-hidden="true">/</span>
+      <NuxtLink to="/produits">Catalogue</NuxtLink>
+      <template v-if="product">
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ product.title }}</span>
+      </template>
+    </nav>
 
     <section v-if="pending && !product" class="state" role="status">Chargement du produit...</section>
     <section v-else-if="error || !product" class="state" role="alert">
@@ -102,26 +110,44 @@ const addToCart = () => {
       <ProductGallery :images="images" :title="product.title" />
 
       <div class="content">
-        <p class="category">{{ product.category }}</p>
+        <p class="label-s">{{ product.category }}<template v-if="product.brand"> · {{ product.brand }}</template></p>
         <h1>{{ product.title }}</h1>
-        <div class="meta-row">
-          <span class="rating" :aria-label="`Note ${product.rating.toFixed(1)} sur 5`">★ {{ product.rating.toFixed(1) }}</span>
+        <p class="rating" :aria-label="`Note ${product.rating.toFixed(1)} sur 5`"><strong>{{ product.rating.toFixed(1) }}</strong> sur 5</p>
+
+        <div class="price-row">
+          <span class="price">{{ formatPrice(product.price) }}</span>
           <span v-if="product.discountPercentage > 0" class="discount">{{ formatDiscount(product.discountPercentage) }}</span>
         </div>
-        <p class="price">{{ formatPrice(product.price) }}</p>
 
         <p class="description">{{ product.description }}</p>
 
-        <ul class="facts">
-          <li v-if="product.brand"><strong>Marque :</strong> {{ product.brand }}</li>
-          <li><strong>Catégorie :</strong> {{ product.category }}</li>
-          <li>
-            <strong>Stock :</strong>
-            <span class="stock" :class="`stock-${stockState.status}`">{{ stockState.label }}</span>
-          </li>
-        </ul>
+        <p class="stock" :class="`stock-${stockState.status}`">{{ stockState.label }}</p>
+
+        <div class="cart-actions">
+          <label class="qty-field">
+            <span>Quantité</span>
+            <input v-model.number="quantity" type="number" min="1" :max="Math.max(product.stock, 1)" step="1" :disabled="outOfStock">
+          </label>
+          <button type="button" class="btn add-button" :class="{ added: justAdded }" :disabled="outOfStock" @click="addToCart">
+            {{ outOfStock ? 'Rupture de stock' : justAdded ? 'Ajouté au panier' : 'Ajouter au panier' }}
+          </button>
+        </div>
+
+        <div class="compare-actions">
+          <CompareButton :product-id="product.id" :title="product.title" />
+        </div>
+
+        <p v-if="cart.stockMessage" class="stock-message" role="alert">{{ cart.stockMessage }}</p>
 
         <dl class="infos">
+          <div v-if="product.brand">
+            <dt>Marque</dt>
+            <dd>{{ product.brand }}</dd>
+          </div>
+          <div>
+            <dt>Catégorie</dt>
+            <dd>{{ product.category }}</dd>
+          </div>
           <div>
             <dt>Garantie</dt>
             <dd>{{ product.warrantyInformation }}</dd>
@@ -136,25 +162,7 @@ const addToCart = () => {
           </div>
         </dl>
 
-        <div v-if="product.tags?.length" class="tags">
-          <span v-for="tag in product.tags" :key="tag">{{ tag }}</span>
-        </div>
-
-        <div class="cart-actions">
-          <label class="qty-field">
-            <span>Quantité</span>
-            <input v-model.number="quantity" type="number" min="1" :max="Math.max(product.stock, 1)" step="1" :disabled="outOfStock">
-          </label>
-          <button type="button" class="add-button" :class="{ added: justAdded }" :disabled="outOfStock" @click="addToCart">
-            {{ outOfStock ? 'Rupture de stock' : justAdded ? 'Ajouté au panier ✓' : 'Ajouter au panier' }}
-          </button>
-        </div>
-
-        <div class="compare-actions">
-          <CompareButton :product-id="product.id" :title="product.title" />
-        </div>
-
-        <p v-if="cart.stockMessage" class="stock-message" role="alert">{{ cart.stockMessage }}</p>
+        <p v-if="product.tags?.length" class="tags">{{ product.tags.join(' · ') }}</p>
       </div>
     </article>
 
@@ -164,246 +172,251 @@ const addToCart = () => {
 
 <style scoped>
 .product-detail-page {
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
+  padding: 0 1.5rem 4rem;
 }
 
-.back-link {
-  display: inline-block;
-  margin-bottom: 1.5rem;
-  color: var(--color-text);
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding-block: 1rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.crumbs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
   text-decoration: none;
-  font-weight: 700;
+}
+
+.crumbs a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.crumbs [aria-current] {
+  color: var(--color-text);
 }
 
 .product-detail {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 2.5rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem;
-  box-shadow: var(--shadow-md);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 4rem;
+  align-items: start;
+}
+
+.product-detail > :first-child {
+  position: sticky;
+  top: 125px;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-.category {
-  margin: 0;
-  color: var(--color-brand);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.72rem;
-  font-weight: 700;
+  align-items: stretch;
 }
 
 h1 {
-  margin: 0.5rem 0 1rem;
-  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  margin: 0.35rem 0 0.6rem;
+  font-size: clamp(1.6rem, 3vw, 2rem);
   letter-spacing: -0.02em;
 }
 
-.meta-row {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.75rem;
-}
-
 .rating {
-  color: #d97706;
-  font-weight: 700;
-}
-
-.discount {
-  background: var(--color-danger);
-  color: white;
-  border-radius: 999px;
-  padding: 0.35rem 0.6rem;
-  font-weight: 700;
-  font-size: 0.8rem;
-}
-
-.price {
-  margin: 0 0 1rem;
-  font-size: 2rem;
-  font-weight: 800;
-}
-
-.description {
-  margin: 0 0 1.25rem;
-  line-height: 1.7;
+  margin: 0;
+  font-size: 0.85rem;
   color: var(--color-muted);
 }
 
-.facts {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.25rem;
-  display: grid;
-  gap: 0.6rem;
+.rating strong {
   color: var(--color-text);
+  font-weight: 500;
 }
 
-.stock-low {
+.price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.price {
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.discount {
+  font-weight: 500;
   color: var(--color-accent);
-  font-weight: 700;
 }
 
-.stock-out {
-  color: var(--color-danger);
-  font-weight: 700;
+.description {
+  margin: 1rem 0 0;
+  max-width: 34rem;
+  color: var(--color-muted);
+}
+
+.stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.25rem 0 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.stock::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .stock-ok {
   color: var(--color-success);
-  font-weight: 600;
 }
 
-.infos {
-  display: grid;
-  gap: 0.6rem;
-  margin: 0 0 1.25rem;
-  padding: 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+.stock-low {
+  color: var(--color-warning);
 }
 
-.infos div {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.infos dt {
-  min-width: 5.5rem;
-  font-weight: 700;
-}
-
-.infos dd {
-  margin: 0;
-  color: var(--color-muted);
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.tags span {
-  background: #f3f2ee;
-  color: var(--color-muted);
-  border-radius: 999px;
-  padding: 0.35rem 0.7rem;
-  font-size: 0.8rem;
-}
-
-.recent-section {
-  margin-top: 2.5rem;
-}
-
-.compare-actions {
-  margin-top: 0.75rem;
+.stock-out {
+  color: var(--color-danger);
 }
 
 .cart-actions {
   display: flex;
-  align-items: end;
-  gap: 1rem;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .qty-field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.35rem;
   font-size: 0.85rem;
-  font-weight: 600;
   color: var(--color-muted);
 }
 
 .qty-field input {
-  width: 80px;
-  padding: 0.65rem 0.75rem;
-  border: 1px solid var(--color-border);
+  width: 84px;
+  min-height: 52px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
   font: inherit;
-  background: #fafaf9;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: #fff;
+}
+
+.qty-field input:hover:not(:disabled) {
+  border-color: var(--color-text);
 }
 
 .add-button {
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-text);
-  color: white;
-  padding: 0.85rem 1.5rem;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.add-button:hover {
-  transform: translateY(-1px);
-}
-
-.add-button:disabled {
-  background: var(--color-muted);
-  cursor: not-allowed;
-  transform: none;
-}
-
-.add-button:focus-visible,
-.qty-field input:focus-visible {
-  outline: 3px solid var(--color-brand);
-  outline-offset: 2px;
+  flex: 1;
+  min-height: 52px;
+  font-size: 1rem;
 }
 
 .add-button.added {
   background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.compare-actions {
+  margin-top: 0.5rem;
+}
+
+.stock-message {
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--color-danger);
+  background: var(--color-surface-2);
+  color: var(--color-danger);
+  font-size: 0.88rem;
+}
+
+.infos {
+  margin: 2rem 0 0;
+  border-top: 1px solid var(--color-text);
+}
+
+.infos div {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.92rem;
+}
+
+.infos dt {
+  color: var(--color-muted);
+}
+
+.infos dd {
+  margin: 0;
+}
+
+.tags {
+  margin: 1rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.recent-section {
+  margin-top: 4rem;
 }
 
 .state {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 3rem 2rem;
+  padding: 3rem 1rem;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   text-align: center;
-  box-shadow: var(--shadow-sm);
   color: var(--color-muted);
 }
 
 .state button {
+  min-height: 44px;
   margin-top: 1rem;
-  border: none;
+  border: 1px solid var(--color-text);
   border-radius: var(--radius-sm);
   background: var(--color-text);
-  color: white;
-  padding: 0.75rem 1rem;
+  color: #fff;
+  padding: 0 1.25rem;
   font: inherit;
+  font-weight: 500;
   cursor: pointer;
 }
 
-.stock-message {
-  margin: 0.85rem 0 0;
-  padding: 0.6rem 0.85rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: var(--radius-sm);
-  color: var(--color-danger);
-  font-size: 0.85rem;
-}
-
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .product-detail {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .product-detail > :first-child {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .product-detail-page {
+    padding-inline: 1rem;
+  }
+
+  .infos div {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
   }
 }
 </style>

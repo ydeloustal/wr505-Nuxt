@@ -145,6 +145,7 @@ const submitSearch = () => {
   text-decoration: none;
   font-size: 0.92rem;
   font-weight: 500;
+  white-space: nowrap;
   color: var(--color-text);
   transition: background 0.2s ease;
 }
@@ -179,6 +180,12 @@ const submitSearch = () => {
 
   .nav-link {
     padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-link:first-child {
+    display: none;
   }
 }
 </style>
